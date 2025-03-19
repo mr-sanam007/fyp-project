@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
+    <article class="card-body">
+        <!-- Logo inside the form -->
+        <div style="position: relative;">
+            <img src="{% static 'images/ad-logo.png' %}" alt="Logo" style="position: absolute; top: -5px; right: 10px; width: 100px; height: auto;">
+        </div>
+
+        <header class="mb-4">
+            <h4 class="card-title">Sign up</h4>
+        </header>
+
+        <!-- Form starts here -->
+        <form action="{% url 'registerUser' %}" method="POST">
+            {% csrf_token %}
+            
+            <div class="form-row">
+                <div class="col form-group">
+                    <label for="{{ form.first_name.id_for_label }}">First name</label>
+                    {{ form.first_name }}
+                </div>
+                <div class="col form-group">
+                    <label for="{{ form.last_name.id_for_label }}">Last name</label>
+                    {{ form.last_name }}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
+                {{ form.phone_number }}
+            </div>
+
+            <div class="form-group">
+                <label class="custom-control custom-radio custom-control-inline">
+                    <input class="custom-control-input" type="radio" name="gender" value="male" {% if form.gender.value == 'male' %}checked{% endif %}>
+                    <span class="custom-control-label"> Male </span>
+                </label>
+                <label class="custom-control custom-radio custom-control-inline">
+                    <input class="custom-control-input" type="radio" name="gender" value="female" {% if form.gender.value == 'female' %}checked{% endif %}>
+                    <span class="custom-control-label"> Female </span>
+                </label>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="{{ form.province.id_for_label }}">Province</label>
+                    {{ form.province }}
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="{{ form.city.id_for_label }}">City</label>
+                    {{ form.city }}
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group col-md-6 position-relative">
+                    <label for="password">Create password</label>
+                    {{form.password}}
+                    <span toggle="#password" class="fa fa-fw fa-eye toggle-password" style="position:absolute; top:38px; right:15px; cursor:pointer;"></span>
+                </div>
+                <div class="form-group col-md-6 position-relative">
+                    <label for="confirm_password">Confirm password</label>
+                   {{form.confirm_password}}
+                    <span toggle="#confirm_password" class="fa fa-fw fa-eye toggle-password" style="position:absolute; top:38px; right:15px; cursor:pointer;"></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"> Register </button>
+            </div>
+        </form>
+    </article>
+</div>
+
+<p class="text-center mt-4">Have an account? <a href="">Log In</a></p>
+<br><br>
+
+<script>
+    const citiesByProvince = {
+        "Kathmandu Valley": ["Kathmandu", "Bhaktapur", "Lalitpur"],
+        "Province No. 1": ["Biratnagar", "Dharan", "Birtamode"],
+        "Province No. 2": ["Janakpur", "Birgunj", "Rajbiraj"],
+        "Bagmati Province": ["Hetauda", "Chandragiri", "Dhulikhel"],
+        "Karnali Province": ["Surkhet", "Nepalgunj", "Jajarkot"],
+        "Gandaki Province": ["Pokhara", "Bandipur", "Damauli"],
+        "Lumbini Province": ["Butwal", "Tansen", "Lumbini"],
+        "Sudurpashchim Province": ["Dhangadhi", "Mahendranagar", "Attariya"]
+    };
+
+    document.getElementById('id_province').addEventListener('change', function() {
+        const province = this.value;
+        const citySelect = document.getElementById('id_city');
+        citySelect.innerHTML = "";
+        if (province && citiesByProvince[province]) {
+            citiesByProvince[province].forEach(city => {
+                const option = document.createElement('option');
+                option.value = city;
+                option.textContent = city;
+                citySelect.appendChild(option);
+            });
+        } else {
+            const option = document.createElement('option');
+            option.value = "";
+            option.textContent = "Choose a province first";
+            citySelect.appendChild(option);
+        }
+    });
+
+    document.querySelectorAll('.toggle-password').forEach(function (icon) {
+        icon.addEventListener('click', function () {
+            const input = document.querySelector(this.getAttribute('toggle'));
+            if (input.type === "password") {
+                input.type = "text";
+                this.classList.remove('fa-eye');
+                this.classList.add('fa-eye-slash');
+            } else {
+                input.type = "password";
+                this.classList.remove('fa-eye-slash');
+                this.classList.add('fa-eye');
+            }
+        });
+    });
+</script>
+{% endblock %}
