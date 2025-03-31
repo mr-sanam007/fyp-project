@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+
+
+
+<body>
+  <div class="login-page">
+    <!-- Left Side - Branding and Welcome -->
+    <div class="login-left">
+      <h1>Welcome to Adriksha</h1>
+      <p>Sign in to access your account. Whether you're a shopper looking for great deals or a seller managing your business, we've got you covered.</p>
+      <a href="{% url 'home' %}" class="btn btn-outline">Back to Homepage</a>
+    </div>
+    
+    <!-- Right Side - Login Form -->
+    <div class="login-right">
+      <div class="login-form-wrap">
+        <div class="login-logo">
+          <img src="{% static 'images/ad-logo.png' %}" alt="Adriksha">
+        </div>
+        
+        <div class="login-header">
+          <h2>Sign In</h2>
+          <p>Access your Adriksha account</p>
+        </div>
+        
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+        
+        <form action="{% url 'login' %}" method="POST">
+          {% csrf_token %}
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" name="email" id="email" class="form-control" placeholder="Enter your email address" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+          </div>
+          
+          <button type="submit" class="btn">Sign In</button>
+          
+          <div class="login-footer">
+            <p><a href="#">Forgot Password?</a></p>
+          </div>
+        </form>
+        
+        <div class="register-options">
+          <div class="register-option">
+            <i class="fas fa-user"></i>
+            <h4>Customer</h4>
+            <p>Shop and track your orders</p>
+            <a href="{% url 'registerUser' %}" class="register-link">Register</a>
+          </div>
+          
+          <div class="register-option">
+            <i class="fas fa-store"></i>
+            <h4>Seller</h4>
+            <p>Sell products and grow your business</p>
+            <a href="{% url 'vendorsignup' %}" class="register-link">Register</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

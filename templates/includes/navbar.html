@@ -1,84 +1,188 @@
+
 {% load static %}
-
-<header class="section-header">
-    <nav class="navbar p-md-0 navbar-expand-sm navbar-light border-bottom">
+  <header class="header" id="main-header">
+    <!-- Top Navigation Bar -->
     <div class="container">
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTop4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarTop4">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item dropdown">
-                 <a href="#" class="nav-link">   English </a>
-                
-            </li>
-            <li class="nav-item dropdown">
-                <a href="#" class="nav-link"> USD </a>
-            </li>
-        </ul>
-        <ul class="navbar-nav">
-            <li><a href="#" class="nav-link"> <i class="fa fa-envelope"></i> Email </a></li>
-            <li><a href="#" class="nav-link"> <i class="fa fa-phone"></i> Call us </a></li>
-        </ul> <!-- list-inline //  -->
-      </div> <!-- navbar-collapse .// -->
-    </div> <!-- container //  -->
-    </nav>
-    
-    <section class="header-main border-bottom">
-        <div class="container">
-    <div class="row align-items-center">
-        <div class="col-lg-2 col-md-3 col-6">
-            <a href="{% url 'home' %}" class="brand-wrap">
-                <img src="{% static 'images/ad-logo.png' %}" style="height: 70px; width: auto; object-fit: contain; display: block;">
+      <div class="top-nav">
+        <!-- Left Section: Hamburger Menu, Logo, Search -->
+        <div class="left-section">
+          <!-- Hamburger Menu (Mobile) -->
+          <button class="hamburger-menu" id="mobile-menu-button">
+            <i class="fas fa-bars"></i>
+          </button>
 
+          <!-- Logo -->
+          <a href="{% url 'home' %}" class="logo">
+            <img src="{% static 'images/ad-logo.png' %}" >
+          </a>
 
-            </a> <!-- brand-wrap.// -->
+          <!-- Search Bar -->
+          <form action="{% url 'search' %}" method="GET" class="search-container">
+            <input 
+              type="text" 
+              name="keyword"
+              id="search-input"
+              class="search-input" 
+              placeholder="Search on Adriksha"
+            >
+            <button type="submit" class="search-button" id="search-button">
+              <i class="fas fa-search"></i>
+            </button>
+          </form>
         </div>
-        <div class="col-lg col-sm col-md col-6 flex-grow-0">
-            <div class="category-wrap dropdown d-inline-block float-right">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
-                    <i class="fa fa-bars"></i> All category 
-                </button>
-                <div class="dropdown-menu">
-                    {% for category in links %}
-                        <a class="dropdown-item" href="{{category.get_url}}">{{ category.Category_name }}</a>
-                    {% endfor %}
-                </div>
-                
-            </div>  <!-- category-wrap.// -->
-        </div> <!-- col.// -->
-        <a href="{% url 'store' %}" class="btn btn-outline-primary">Store</a>
 
-        <div class="col-lg  col-md-6 col-sm-12 col">
-            <form action="#" class="search">
-                <div class="input-group w-100">
-                    <input type="text" class="form-control" style="width:60%;" placeholder="Search">
-                    
-                    <div class="input-group-append">
-                      <button class="btn btn-primary" type="submit">
-                        <i class="fa fa-search"></i>
-                      </button>
-                    </div>
-                </div>
-            </form> <!-- search-wrap .end// -->
-        </div> <!-- col.// -->
-        <div class="col-lg-3 col-sm-6 col-8 order-2 order-lg-3">
-                    <div class="d-flex justify-content-end mb-3 mb-lg-0">
-                        <div class="widget-header">
-                            <small class="title text-muted">Welcome guest!</small>
-                            <div> 
-                                <a href="./signin.html">Sign in</a> <span class="dark-transp"> | </span>
-                                <a href="{% url 'registerUser' %}">Register</a>
-                            </div>
-                        </div>
-                        <a href="{% url 'cart'%}" class="widget-header pl-3 ml-3">
-                            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-                            <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
-                        </a>
-                    </div> <!-- widgets-wrap.// -->
-                </div> <!-- col.// -->
-    </div> <!-- row.// -->
-        </div> <!-- container.// -->
-    </section> <!-- header-main .// -->
-    
-    </header> <!-- section-header.// -->
+        <!-- Right Section: App Download, Language, Account, Cart -->
+        <div class="right-section">
+          <!-- App Download -->
+          <div class="app-download">
+            <i class="fas fa-qrcode"></i>
+            <div class="app-download-text">
+              <span>Download the</span>
+              <span>Adriksha app</span>
+            </div>
+          </div>
+
+          <!-- Language/Region Selector -->
+          <div class="dropdown-container language-dropdown" id="language-dropdown-container">
+            <button class="dropdown-button" id="language-dropdown-button">
+              <span id="selected-language">EN / NPR</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <!-- Language Dropdown -->
+            <div class="dropdown-menu" id="language-dropdown">
+              <h4>Language</h4>
+              <div class="language-options">
+                <a href="#" data-lang="EN / NPR" class="active"><span>English</span> <i class="fas fa-check"></i></a>
+                <a href="#" data-lang="NP / NPR"><span>नेपाली</span></a>
+              </div>
+              <div class="language-options">
+                <a href="#" data-lang="HI / INR"><span>हिन्दी</span></a>
+                <a href="#" data-lang="ES / EUR"><span>Español</span></a>
+              </div>
+              <h4>Currency</h4>
+              <div class="language-options">
+                <a href="#" data-currency="NPR" class="active"><span>NPR</span> <i class="fas fa-check"></i></a>
+                <a href="#" data-currency="USD"><span>USD</span></a>
+              </div>
+              <div class="language-options">
+                <a href="#" data-currency="EUR"><span>EUR</span></a>
+                <a href="#" data-currency="INR"><span>INR</span></a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Account -->
+          <div class="dropdown-container account-dropdown" id="account-dropdown-container">
+            <button class="dropdown-button" id="account-dropdown-button">
+              <i class="fas fa-user-circle"></i>
+              <span>Welcome</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <!-- Account Dropdown -->
+            <div class="dropdown-menu" id="account-dropdown">
+              <a href="{% url 'login' %}">Sign in</a>
+              <a href="{% url 'registerUser' %}">Register</a>
+              <a href="#">My Orders</a>
+              <a href="#">My Wishlist</a>
+              <a href="#">My Account</a>
+              <a href="{% url 'vendorsignup' %}"><i class="fas fa-store"></i> Seller Login</a>
+            </div>
+          </div>
+
+          <!-- Shopping Cart -->
+          <div class="cart-container">
+            <a href="{% url 'cart' %}" class="cart-icon">
+              <i class="fas fa-shopping-cart"></i>
+              <span class="cart-count">{{cart_count}}</span>
+            </a>
+          </div>
+
+          <!-- Theme Toggle -->
+          <button class="theme-toggle" id="theme-toggle">
+            <i class="fas fa-sun"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Search Bar (shown on smaller screens) -->
+    <div class="mobile-search">
+      <form action="{% url 'search' %}" method="GET" class="search-container">
+        <input 
+          type="text" 
+          name="keyword"
+          id="mobile-search-input"
+          class="search-input"
+          placeholder="Search on Adriksha"
+        >
+        <button type="submit" class="search-button" id="mobile-search-button">
+          <i class="fas fa-search"></i>
+        </button>
+      </form>
+    </div>
+
+    <!-- Categories and Marketplace Navigation -->
+    <div class="categories-nav">
+      <div class="container">
+        <div class="categories-nav-inner">
+          <!-- Categories Dropdown with Hamburger Icon -->
+          <div class="dropdown-container categories-dropdown" id="categories-dropdown-container">
+            <button class="dropdown-button" id="categories-dropdown-button">
+              <i class="fas fa-bars"></i>
+              <span>Categories</span>
+              <i class="fas fa-chevron-down"></i>
+            </button>
+            <!-- Categories Dropdown Content -->
+            <div class="dropdown-menu" id="categories-dropdown">
+              {% for category in links %}
+                <a href="{{category.get_url}}">
+                  <i class="fas {{category.icon_class}}"></i>
+                  {{ category.Category_name }}
+                </a>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Marketplace Link -->
+          <a href="{% url 'store' %}" class="marketplace-link">
+            <i class="fas fa-store"></i>
+            <span>Marketplace</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- SuperDeals Banner -->
+    <div class="superdeals">
+      <div class="container">
+        <div class="superdeals-inner">
+          <div class="superdeals-left">
+            <div class="superdeals-title">SuperDeals</div>
+            <div class="superdeals-promo">
+              <i class="fas fa-tag"></i>
+              <span>Spring Into Savings · Up to 70% off</span>
+            </div>
+          </div>
+          <button class="superdeals-button">
+            <i class="fas fa-bolt"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu (Hidden by default) -->
+    <div class="mobile-menu" id="mobile-menu">
+      <div class="container">
+        {% for category in links %}
+          <a href="{{category.get_url}}">{{ category.Category_name }}</a>
+        {% endfor %}
+        <a href="{% url 'store' %}">Marketplace</a>
+        <a href="#">SuperDeals</a>
+        <a href="#">Download App</a>
+        <a href="#">Select Language</a>
+        <a href="#">My Account</a>
+      </div>
+    </div>
+  </header>
+
+ 

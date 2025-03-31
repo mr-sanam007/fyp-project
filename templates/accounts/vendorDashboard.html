@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Vendor Dashboard</h2>
+            
+            <p>Welcome, {{ vendor.vendor_name }}!</p>
+            
+            {% if not vendor.is_approved %}
+                <div class="alert alert-warning">Your account is under review. Please wait for approval.</div>
+            {% else %}
+                <div class="alert alert-success">Your account is approved and active!</div>
+            {% endif %}
+            
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Business Information</h5>
+                    <p class="card-text">
+                        <strong>Vendor Name:</strong> {{ vendor.vendor_name }}<br>
+                        <strong>License:</strong> <a href="{{ vendor.vendor_license.url }}" target="_blank">View License</a>
+                    </p>
+                    <a href="#" class="btn btn-primary">Edit Profile</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

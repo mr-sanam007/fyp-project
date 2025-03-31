@@ -4,138 +4,146 @@
 
 {% block content %}
 
-<section class="section-content padding-y bg">
+<section class="section-content padding-y bg-light">
     <div class="container">
     
-    <!-- ============================ COMPONENT 1 ================================= -->
-    <div class="card">
-        <div class="row no-gutters">
-            <aside class="col-md-6">
-                <article class="gallery-wrap"> 
-                    <div class="img-big-wrap">
-                        <a href="#"><img src="{{single_product.image.url}}"></a>
-                    </div> <!-- img-big-wrap.// -->
-                </article> <!-- gallery-wrap .end// -->
-            </aside>
-            <main class="col-md-6 border-left">
-                <article class="content-body">
-                    <h2 class="title">{{single_product.product_name}}</h2>
-                    <div class="mb-3"> 
-                        <var class="price h4">NPR{{single_product.price}}</var> 
-                    </div> 
-                    <p>{{single_product.description}}</p>
-                    <hr>
-                    <div class="row">
-                        <div class="item-option-select">
-                            <h6>Choose Color</h6>
-                            <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-light">
-                                    <input type="radio" name="radio_color"> Silver
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="radio_color"> Gray
-                                </label>
-                                <label class="btn btn-light active">
-                                    <input type="radio" name="radio_color" checked> Gold
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="radio_color"> Black
-                                </label>
-                            </div> 
+        <!-- ============================ COMPONENT 1 ================================= -->
+        <div class="card shadow-lg border-0 rounded-lg overflow-hidden">
+            <div class="row no-gutters">
+                <aside class="col-md-6">
+                    <article class="gallery-wrap"> 
+                        <div class="img-big-wrap">
+                            <a href="#"><img src="{{single_product.image.url}}" alt="{{single_product.product_name}}" class="img-fluid rounded-lg"></a>
                         </div>
-                    </div> <!-- row.// -->
-                    <div class="row">
-                        <div class="item-option-select">
-                            <h6>Select Size</h6>
-                            <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
-                                <label class="btn btn-light">
-                                    <input type="radio" name="radio_color"> S
-                                </label>
-                                <label class="btn btn-light active">
-                                    <input type="radio" name="radio_color" checked> M
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="radio_color"> L
-                                </label>
-                                <label class="btn btn-light">
-                                    <input type="radio" name="radio_color"> XL
-                                </label>
-                            </div> 
+                    </article>
+                </aside>
+                <main class="col-md-6 border-left p-4">
+                    <article class="content-body">
+                        <h2 class="title text-primary mb-3">{{single_product.product_name}}</h2>
+                        <div class="mb-3"> 
+                            <var class="price h4 text-success">NPR{{single_product.price}}</var> 
                         </div>
-                    </div> <!-- row.// -->
-                    <hr>
+                        <p class="text-muted">{{single_product.description}}</p>
+                        <hr>
 
-                    <!-- Quantity Selection Bar -->
-                    <form action="{% url 'add_cart' single_product.id %}" method="POST">
-                        {% csrf_token %}
-                       
-                        <!-- Add to Cart Button -->
-                        {% if single_product.stock <= 0 %}
-                            <h4 class="text-danger">Out of Stock</h4>
-                        {% else %}
-                            {% if in_cart %}
-                                <!-- Product is already in the cart -->
-                                <div class="d-grid gap-2">
-                                    <a href="#" class="btn btn-success btn-lg">
-                                        <span class="text">Added to cart</span>
-                                        <i class="fas fa-check"></i>
-                                    </a>
-                                    
-                                    <a href="{% url 'cart' %}" class="btn btn-primary btn-lg">
-                                        <span class="text">View Cart</span>
-                                        <i class="fas fa-eye"></i>
-                                    </a>
+                        <!-- Color Options -->
+                        <div class="row mb-3">
+                            <div class="item-option-select">
+                                <h6 class="font-weight-bold">Choose Color</h6>
+                                <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-secondary">
+                                        <input type="radio" name="radio_color"> Silver
+                                    </label>
+                                    <label class="btn btn-outline-secondary">
+                                        <input type="radio" name="radio_color"> Gray
+                                    </label>
+                                    <label class="btn btn-outline-secondary active">
+                                        <input type="radio" name="radio_color" checked> Gold
+                                    </label>
+                                    <label class="btn btn-outline-secondary">
+                                        <input type="radio" name="radio_color"> Black
+                                    </label>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Size Options -->
+                        <div class="row mb-3">
+                            <div class="item-option-select">
+                                <h6 class="font-weight-bold">Select Size</h6>
+                                <div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
+                                    <label class="btn btn-outline-secondary">
+                                        <input type="radio" name="radio_size"> S
+                                    </label>
+                                    <label class="btn btn-outline-secondary active">
+                                        <input type="radio" name="radio_size" checked> M
+                                    </label>
+                                    <label class="btn btn-outline-secondary">
+                                        <input type="radio" name="radio_size"> L
+                                    </label>
+                                    <label class="btn btn-outline-secondary">
+                                        <input type="radio" name="radio_size"> XL
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr>
+
+                        <!-- Quantity Selection Bar -->
+                        <form action="{% url 'add_cart' single_product.id %}" method="POST">
+                            {% csrf_token %}
+                           
+                            <!-- Add to Cart Button -->
+                            {% if single_product.stock <= 0 %}
+                                <h4 class="text-danger">Out of Stock</h4>
                             {% else %}
-                                <!-- Product is not in the cart -->
-                                <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-warning btn-lg">
-                                        <span class="text">Add to cart</span>
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </button>
+                                {% if in_cart %}
+                                    <!-- Product is already in the cart -->
+                                    <div class="d-grid gap-2">
+                                        <a href="#" class="btn btn-success btn-lg">
+                                            <span class="text">Added to Cart</span>
+                                            <i class="fas fa-check"></i>
+                                        </a>
+                                        
+                                        <a href="{% url 'cart' %}" class="btn btn-primary btn-lg">
+                                            <span class="text">View Cart</span>
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                    </div>
+                                {% else %}
+                                    <!-- Product is not in the cart -->
+                                    <div class="d-grid gap-2">
+                                        <button type="submit" class="btn btn-warning btn-lg">
+                                            <span class="text">Add to Cart</span>
+                                            <i class="fas fa-shopping-cart"></i>
+                                        </button>
 
-                                    <!-- Buy Now button -->
-                                    <a href="{#}" class="btn btn-primary btn-lg">
-                                        <span class="text">Buy Now</span>
-                                        <i class="fa-solid fa-handshake"></i>
-                                    </a>
-                                </div>
+                                        <!-- Buy Now button -->
+                                        <a href="{#}" class="btn btn-primary btn-lg">
+                                            <span class="text">Buy Now</span>
+                                            <i class="fa-solid fa-handshake"></i>
+                                        </a>
+                                    </div>
+                                {% endif %}
                             {% endif %}
-                        {% endif %}
-                    </form>
-                </article> <!-- product-info-aside .// -->
-            </main> <!-- col.// -->
-        </div> <!-- row.// -->
-    </div> <!-- card.// -->
-    <!-- ============================ COMPONENT 1 END .// ================================= -->
-    
-    <br>
-    
-    <div class="row">
-        <div class="col-md-9">
-            <header class="section-heading">
-                <h3>Customer Reviews</h3>  
-            </header>
-            <article class="box mb-3">
-                <div class="icontext w-100">
-                    <img src="{% static 'images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle" alt="Customer Avatar">
-                    <div class="text">
-                        <span class="date text-muted float-md-right">24.04.2020</span>  
-                        <h6 class="mb-1">Mike John</h6>
+                        </form>
+                    </article>
+                </main>
+            </div>
+        </div>
+        <!-- ============================ COMPONENT 1 END .// ================================= -->
+        
+        <br>
+        
+        <!-- Customer Reviews Section -->
+        <div class="row">
+            <div class="col-md-9">
+                <header class="section-heading mb-4">
+                    <h3 class="font-weight-bold">Customer Reviews</h3>  
+                </header>
+                
+                <!-- Review Box -->
+                <article class="box mb-3 shadow-sm rounded-lg p-3">
+                    <div class="icontext w-100">
+                        <img src="{% static 'images/avatars/avatar1.jpg' %}" class="img-xs icon rounded-circle" alt="Customer Avatar">
+                        <div class="text">
+                            <span class="date text-muted float-md-right">24.04.2020</span>  
+                            <h6 class="mb-1 text-primary">Mike John</h6>
+                        </div>
                     </div>
-                </div> <!-- icontext.// -->
-                <div class="mt-3">
-                    <p>
-                        Dummy comment Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                        tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-                        quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    </p>	
-                </div>
-            </article>
-        </div> <!-- col.// -->
-    </div> <!-- row.// -->
-    </div> <!-- container .//  -->
+                    <div class="mt-3">
+                        <p class="text-muted">
+                            Dummy comment: Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+                            tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
+                            quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        </p>	
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
 </section>
-<!-- ========================= SECTION CONTENT END// ========================= -->
+
 
 {% endblock %}

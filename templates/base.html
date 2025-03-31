@@ -1,56 +1,50 @@
-{% load static %}
+{% load static %} <!-- Add this line at the top of your template -->
 
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta http-equiv="pragma" content="no-cache" />
-<meta http-equiv="cache-control" content="max-age=604800" />
-<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="utf-8">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="cache-control" content="max-age=604800" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-<title>Adriksha | your local shopping buddy</title>
+    <title>Adriksha | your local shopping buddy</title>
 
-<link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/ad-logo.png' %}">
-<!-- nesceesary icon  here -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <!-- Link to your custom CSS files -->
+    
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
+    <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/ad-logo.png' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<!-- jQuery -->
-<script src="{% static 'js/jquery-2.0.0.min.js' %}" type="text/javascript"></script>
-
-<!-- Bootstrap4 files-->
-<script src="{% static 'js/bootstrap.bundle.min.js' %}" type="text/javascript"></script>
-<link href="{% static 'css/bootstrap.css' %}" rel="stylesheet" type="text/css"/>
-
-<!-- Font awesome 5 -->
-<link href="{% static 'fonts/fontawesome/css/all.min.css' %}" type="text/css" rel="stylesheet">
-
-<!-- custom style -->
-<link href="{% static 'css/ui.css' %}" rel="stylesheet" type="text/css"/>
-<link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)" />
-
-<!-- custom javascript -->
-<script src="{% static 'js/script.js' %}" type="text/javascript"></script>
-
-<script type="text/javascript">
-/// some script
-
-// jquery ready start
-$(document).ready(function() {
-	// jQuery code
-
-}); 
-// jquery end
-</script>
-
+    <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
+    <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/ui.css' %}" rel="stylesheet">
+    <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)">
 </head>
 <body>
-
-   <!-- navbar goes here -->
+    <!-- Navbar -->
     {% include 'includes/navbar.html' %}
         
-    {% block content%}
-    <!-- content goes here -->
+    {% block content %}
+    <!-- Content goes here -->
     {% endblock %}
 
-    <!-- footer goes here  -->
+    <!-- Footer -->
     {% include 'includes/footer.html' %}
+
+    <!-- Scripts -->
+    {% comment %} <script src="{% static 'js/jquery-2.0.0.min.js' %}"></script> {% endcomment %}
+    <script src="{% static 'js/custom.js' %}"></script>
+    <script src="{% static 'js/theme.js' %}"></script>
+    {% comment %} <script src="{% static 'js/main.js' %}"></script> {% endcomment %}
+    {% comment %} <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script> {% endcomment %}
+    <script>
+        $(document).ready(function() {
+            // Your jQuery or JavaScript code here
+        });
+    </script>
+</body>
+</html>

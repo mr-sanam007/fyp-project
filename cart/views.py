@@ -62,18 +62,25 @@ def remove_cart_item(request, product_id):
     
     return redirect('cart')
 
-# --------------------------------------------------------#
 def cart(request, total=0, quantity=0, cart_items=None):
+    # Initialize all variables with default values
+    shipping_charge = 0
+    grand_total = 0
+    cart_items = []  # Initialize as empty list instead of None
+
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request))
         cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
-            cart_item.item_total = cart_item.product.price * cart_item.quantity  # add this line
+            cart_item.item_total = cart_item.product.price * cart_item.quantity
             total += cart_item.item_total
             quantity += cart_item.quantity
-        shipping_charge =(2 * total)/100
+        
+        shipping_charge = (2 * total)/100
         grand_total = total + shipping_charge
+        
     except ObjectDoesNotExist:
+        # All variables already have their default values
         pass
 
     context = {

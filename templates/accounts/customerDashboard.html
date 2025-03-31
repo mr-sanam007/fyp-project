@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<h1>{{ user.username }} this is customer page</h1>
+{% if user.is_authenticated %}
+<a href="{% url 'logout' %}" class="btn btn-outline-danger ml-3">Logout</a>
+{% endif %}
+
+{% endblock %}

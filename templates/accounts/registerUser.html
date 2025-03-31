@@ -1,134 +1,150 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
-<div class="card mx-auto" style="max-width:520px; margin-top:40px;">
-    <article class="card-body">
-        <!-- Logo inside the form -->
-        <div style="position: relative;">
-            <img src="{% static 'images/ad-logo.png' %}" alt="Logo" style="position: absolute; top: -5px; right: 10px; width: 100px; height: auto;">
+  <div class="signup-container">
+    <!-- Left Side - Information and Benefits -->
+    <div class="signup-sidebar">
+      <div class="signup-logo">
+        <img src="{% static 'images/ad-logo.png' %}" alt="Adriksha">
+      </div>
+      
+      <h1 class="signup-heading">Join Adriksha</h1>
+      <p class="signup-text">Create your account to enjoy a personalized shopping experience with access to exclusive deals and easy order tracking.</p>
+      
+      <div class="signup-benefits">
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-tags"></i>
+          </div>
+          <div class="benefit-text">
+            <strong>Exclusive Deals</strong>
+            Access special offers and discounts available only to registered customers.
+          </div>
+        </div>
+        
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-clipboard-list"></i>
+          </div>
+          <div class="benefit-text">
+            <strong>Order Tracking</strong>
+            Easily track your orders and manage returns from your account dashboard.
+          </div>
+        </div>
+        
+        <div class="benefit-item">
+          <div class="benefit-icon">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="benefit-text">
+            <strong>Save Favorites</strong>
+            Create wishlists of your favorite products to purchase later or share with friends.
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Right Side - Registration Form -->
+    <div class="signup-form-container">
+      <div class="form-header">
+        <h2>Customer Registration</h2>
+        <p>Create your shopping account in just a few steps</p>
+      </div>
+      
+      {% if messages %}
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <form action="{% url 'registerUser' %}" method="POST" id="customerSignupForm">
+        {% csrf_token %}
+        
+        <h3 class="section-title">Personal Information</h3>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.first_name.id_for_label }}" class="form-label">First Name*</label>
+            {{ form.first_name }}
+            {% if form.first_name.errors %}
+              <div class="form-error">{{ form.first_name.errors }}</div>
+            {% endif %}
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.last_name.id_for_label }}" class="form-label">Last Name*</label>
+            {{ form.last_name }}
+            {% if form.last_name.errors %}
+              <div class="form-error">{{ form.last_name.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.username.id_for_label }}" class="form-label">Username*</label>
+            {{ form.username }}
+            {% if form.username.errors %}
+              <div class="form-error">{{ form.username.errors }}</div>
+            {% endif %}
+            <div class="form-help">This will be used for login</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.email.id_for_label }}" class="form-label">Email Address*</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+              <div class="form-error">{{ form.email.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.phone_number.id_for_label }}" class="form-label">Phone Number*</label>
+            {{ form.phone_number }}
+          </div>
         </div>
 
-        <header class="mb-4">
-            <h4 class="card-title">Sign up</h4>
-        </header>
-
-        <!-- Form starts here -->
-        <form action="{% url 'registerUser' %}" method="POST">
-            {% csrf_token %}
-            
-            <div class="form-row">
-                <div class="col form-group">
-                    <label for="{{ form.first_name.id_for_label }}">First name</label>
-                    {{ form.first_name }}
-                </div>
-                <div class="col form-group">
-                    <label for="{{ form.last_name.id_for_label }}">Last name</label>
-                    {{ form.last_name }}
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Email</label>
-                {{ form.email }}
-                <small class="form-text text-muted">We'll never share your email with anyone else.</small>
-            </div>
-
-            <div class="form-group">
-                <label for="{{ form.phone_number.id_for_label }}">Phone Number</label>
-                {{ form.phone_number }}
-            </div>
-
-            <div class="form-group">
-                <label class="custom-control custom-radio custom-control-inline">
-                    <input class="custom-control-input" type="radio" name="gender" value="male" {% if form.gender.value == 'male' %}checked{% endif %}>
-                    <span class="custom-control-label"> Male </span>
-                </label>
-                <label class="custom-control custom-radio custom-control-inline">
-                    <input class="custom-control-input" type="radio" name="gender" value="female" {% if form.gender.value == 'female' %}checked{% endif %}>
-                    <span class="custom-control-label"> Female </span>
-                </label>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-6">
-                    <label for="{{ form.province.id_for_label }}">Province</label>
-                    {{ form.province }}
-                </div>
-                <div class="form-group col-md-6">
-                    <label for="{{ form.city.id_for_label }}">City</label>
-                    {{ form.city }}
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group col-md-6 position-relative">
-                    <label for="password">Create password</label>
-                    {{form.password}}
-                    <span toggle="#password" class="fa fa-fw fa-eye toggle-password" style="position:absolute; top:38px; right:15px; cursor:pointer;"></span>
-                </div>
-                <div class="form-group col-md-6 position-relative">
-                    <label for="confirm_password">Confirm password</label>
-                   {{form.confirm_password}}
-                    <span toggle="#confirm_password" class="fa fa-fw fa-eye toggle-password" style="position:absolute; top:38px; right:15px; cursor:pointer;"></span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block"> Register </button>
-            </div>
-        </form>
-    </article>
-</div>
-
-<p class="text-center mt-4">Have an account? <a href="">Log In</a></p>
-<br><br>
-
-<script>
-    const citiesByProvince = {
-        "Kathmandu Valley": ["Kathmandu", "Bhaktapur", "Lalitpur"],
-        "Province No. 1": ["Biratnagar", "Dharan", "Birtamode"],
-        "Province No. 2": ["Janakpur", "Birgunj", "Rajbiraj"],
-        "Bagmati Province": ["Hetauda", "Chandragiri", "Dhulikhel"],
-        "Karnali Province": ["Surkhet", "Nepalgunj", "Jajarkot"],
-        "Gandaki Province": ["Pokhara", "Bandipur", "Damauli"],
-        "Lumbini Province": ["Butwal", "Tansen", "Lumbini"],
-        "Sudurpashchim Province": ["Dhangadhi", "Mahendranagar", "Attariya"]
-    };
-
-    document.getElementById('id_province').addEventListener('change', function() {
-        const province = this.value;
-        const citySelect = document.getElementById('id_city');
-        citySelect.innerHTML = "";
-        if (province && citiesByProvince[province]) {
-            citiesByProvince[province].forEach(city => {
-                const option = document.createElement('option');
-                option.value = city;
-                option.textContent = city;
-                citySelect.appendChild(option);
-            });
-        } else {
-            const option = document.createElement('option');
-            option.value = "";
-            option.textContent = "Choose a province first";
-            citySelect.appendChild(option);
-        }
-    });
-
-    document.querySelectorAll('.toggle-password').forEach(function (icon) {
-        icon.addEventListener('click', function () {
-            const input = document.querySelector(this.getAttribute('toggle'));
-            if (input.type === "password") {
-                input.type = "text";
-                this.classList.remove('fa-eye');
-                this.classList.add('fa-eye-slash');
-            } else {
-                input.type = "password";
-                this.classList.remove('fa-eye-slash');
-                this.classList.add('fa-eye');
-            }
-        });
-    });
-</script>
+        <!-- New Gender Field -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.gender.id_for_label }}" class="form-label">Gender*</label>
+            {{ form.gender }}
+            {% if form.gender.errors %}
+              <div class="form-error">{{ form.gender.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label for="{{ form.password.id_for_label }}" class="form-label">Password*</label>
+            {{ form.password }}
+            {% if form.password.errors %}
+              <div class="form-error">{{ form.password.errors }}</div>
+            {% endif %}
+            <div class="form-help">Use at least 8 characters with letters, numbers and symbols</div>
+          </div>
+          
+          <div class="form-group">
+            <label for="{{ form.confirm_password.id_for_label }}" class="form-label">Confirm Password*</label>
+            {{ form.confirm_password }}
+            {% if form.confirm_password.errors %}
+              <div class="form-error">{{ form.confirm_password.errors }}</div>
+            {% endif %}
+          </div>
+        </div>
+        
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Create Account</button>
+      </form>
+      
+      <div class="form-footer">
+        <p>Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+        <p style="margin-top: 10px;">Want to sell on Adriksha? <a href="{% url 'vendorsignup' %}">Register as a Seller</a></p>
+      </div>
+    </div>
+  </div>
 {% endblock %}

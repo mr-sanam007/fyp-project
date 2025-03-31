@@ -1,56 +1,58 @@
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db.models.fields.related import OneToOneField
-from django.db.models.signals import post_save, pre_save
-from django.dispatch import receiver
-# Create your models here.
+
 class MyAccountManager(BaseUserManager):
-    def create_user(self, first_name, last_name, username, email, password=None):
+    def create_user(self, first_name, last_name, username, email, phone_number, password=None, **extra_fields):
         if not email:
-            raise ValueError(' user should have email address')
-        
+            raise ValueError('User should have an email address')
         if not username:
-            raise ValueError(" user should have username")
+            raise ValueError('User should have a username')
         
+        email = self.normalize_email(email)
         user = self.model(
-            email =self.normalize_email(email),
-            username =username,
-            first_name = first_name,
-            last_name = last_name,
-
+            email=email,
+            username=username,
+            first_name=first_name,
+            last_name=last_name,
+            phone_number=phone_number,
+            **extra_fields
         )
 
-        user. set_password(password)
-        user.save(using=self.db)
+        user.set_password(password)
+        user.save(using=self._db)
         return user
-    
-    def create_superuser( self, first_name, last_name, email, username, password):
-        user = self.create_user(
-            email =self.normalize_email(email),
-            username =username,
-            first_name = first_name,
-            last_name = last_name,
-        )
 
+    def create_superuser(self, first_name, last_name, username, email, phone_number, password, **extra_fields):
+        user = self.create_user(
+            first_name=first_name,
+            last_name=last_name,
+            username=username,
+            email=email,
+            phone_number=phone_number,
+            password=password,
+            **extra_fields
+        )
         user.is_admin = True
         user.is_active = True
         user.is_staff = True
         user.is_superadmin = True
-        user.save(using=self.db)
+        user.save(using=self._db)
         return user
 
     # custom user model here
 
 class Account(AbstractBaseUser):
-    STORE =1
+    SELLER =1
     CUSTOMER =2
     ROLE_CHOICE =(
-        (STORE, 'STORE'),
+        (SELLER, 'SELLER'),
         (CUSTOMER,'CUSTOMER'),
     )
     GENDER_CHOICES = [
         ('male', 'Male'),
         ('female', 'Female'),
+        ('O', 'Other'),
     ]
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -86,6 +88,12 @@ class Account(AbstractBaseUser):
     def has_module_perms(self, app_label):  
         return True 
     
+def get_role(self):
+    if self.role == 1:
+        user_role = 'SELLER'
+    elif self.role == 2:
+        user_role = 'CUSTOMER'
+    return user_role
 
 # user profile model
 
@@ -102,13 +110,4 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.email
-    
-@receiver(post_save, sender= Account)
-def post_save_create_profile_receiver(sender, instance, created, **kwargs):
-    print('created')
-    if created: 
-        UserProfile.objects.create(user=instance)
-        print(' userprofile created successfully')
-    else:
-        profile= UserProfile.objects.get(user=instance)
-        print("user profile successfully updated")
+ 
