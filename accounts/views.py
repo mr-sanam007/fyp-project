@@ -3,7 +3,7 @@ from django.contrib import messages, auth
 from .forms import UserForm
 from .models import Account, UserProfile
 from vendor.forms import VendorForm
-from .utils import detectUser
+from .utils import detectUser\
 
 def registerUser(request):
     if request.user.is_authenticated:
@@ -33,6 +33,9 @@ def registerUser(request):
             account.role = Account.CUSTOMER
             account.save()
 
+            # send verification email
+            # send_verfication_email(request, account)
+
             messages.success(request, 'Account created successfully!')
             return redirect('registerUser')
         else:
@@ -41,6 +44,10 @@ def registerUser(request):
         form = UserForm()
 
     return render(request, 'accounts/registerUser.html', {'form': form})
+
+# def activate(request , uidb64, token):
+#     # activating the user by setting the is_activate status to true
+#     return
 
 
 def vendorsignup(request):
@@ -76,7 +83,9 @@ def vendorsignup(request):
             user_profile = UserProfile.objects.get(user=user)
             vendor.user_profile = user_profile
             vendor.save()
-            
+            # send verification email
+            # send_verfication_email( request, user)
+
             messages.success(request, 'Your account has been created successfully! Please wait for approval.')
             return redirect('vendorsignup')
         else:
@@ -92,11 +101,16 @@ def vendorsignup(request):
     }
     return render(request, 'accounts/vendor_signup.html', context)
 
-# login logic goes here 
 def login(request):
     if request.user.is_authenticated:
-        messages.warning(request, 'you are already logged in!')
-        return redirect('vendorDashboard')
+        messages.warning(request, 'You are already logged in!')
+        if request.user.is_admin or request.user.is_superadmin:
+            return redirect('/admin/')  # Django admin panel
+        elif request.user.role == Account.SELLER:
+            return redirect('vendorDashboard')
+        else:
+            return redirect('customerDashboard')
+
     elif request.method == 'POST':
         email = request.POST.get('email')
         password = request.POST.get('password')
@@ -105,16 +119,19 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            messages.success( request, 'You have been logged in successfully!')
-            return redirect('customerDashboard')
+            messages.success(request, 'You have been logged in successfully!')
+            
+            if user.is_admin or user.is_superadmin:
+                return redirect('/admin/')  # Django admin panel
+            elif user.role == Account.SELLER:
+                return redirect('vendorDashboard')
+            else:
+                return redirect('customerDashboard')
         else:
             messages.error(request, 'Invalid email or password')
             return redirect('login')
+    
     return render(request, 'accounts/login.html')
-        
-   
-  
-
 # Logout
 def logout(request):
     auth.logout(request)

@@ -2,30 +2,115 @@
 {% load static %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Vendor Dashboard</h2>
-            
-            <p>Welcome, {{ vendor.vendor_name }}!</p>
-            
-            {% if not vendor.is_approved %}
-                <div class="alert alert-warning">Your account is under review. Please wait for approval.</div>
-            {% else %}
-                <div class="alert alert-success">Your account is approved and active!</div>
-            {% endif %}
-            
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Business Information</h5>
-                    <p class="card-text">
-                        <strong>Vendor Name:</strong> {{ vendor.vendor_name }}<br>
-                        <strong>License:</strong> <a href="{{ vendor.vendor_license.url }}" target="_blank">View License</a>
-                    </p>
-                    <a href="#" class="btn btn-primary">Edit Profile</a>
-                </div>
-            </div>
+
+<div class="vp-wrapper">
+    <!-- Top Header -->
+    <header class="vp-header">
+      <div class="vp-header-content">
+        <div class="vp-brand-logo">
+          <div class="vp-logo">
+            <svg width="100%" height="100%" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="50" height="50" rx="10" fill="#4F46E5"/>
+              <path d="M15 25L22 32L35 18" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
         </div>
-    </div>
-</div>
+        <div class="vp-shop-info">
+          <h1 class="vp-shop-name">store name</h1>
+          <p class="vp-shop-location">location</p>
+        </div>
+      </div>
+      <div class="vp-header-banner">
+        <span>Background cover image</span>
+      </div>
+    </header>
+    
+    <!-- Main Content -->
+    <main class="vp-main">
+      <!-- Sidebar -->
+      {%include 'includes/vendor_sidebar.html'%}
+      
+      <!-- Dashboard Content -->
+      <section class="vp-content">
+        <div class="vp-content-section">
+          <h2 class="vp-section-heading">RECENT ORDERS</h2>
+          
+          <div class="vp-filter-controls">
+            <select id="vp-orderFilter">
+              <option value="all" selected>select orders</option>
+              <option value="completed">Completed</option>
+              <option value="processing">Processing</option>
+            </select>
+          </div>
+          
+          <div class="vp-table-wrapper">
+            <table class="vp-data-table">
+              <thead>
+                <tr>
+                  <th>ORDER ID</th>
+                  <th>DATE</th>
+                  <th>TOTAL PRICE</th>
+                  <th>CHARGES</th>
+                  <th>RECEIVED</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>12345</td>
+                  <td>Feb 8, 2023</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-completed">COMPLETED</span></td>
+                </tr>
+                <tr>
+                  <td>23456</td>
+                  <td>Jul 14, 2021</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-processing">PROCESSING</span></td>
+                </tr>
+                <tr>
+                  <td>34567</td>
+                  <td>Nov 25, 2020</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-completed">COMPLETED</span></td>
+                </tr>
+                <tr>
+                  <td>45678</td>
+                  <td>Mar 3, 2022</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-completed">COMPLETED</span></td>
+                </tr>
+                <tr>
+                  <td>56789</td>
+                  <td>Sep 30, 2019</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-processing">PROCESSING</span></td>
+                </tr>
+                <tr>
+                  <td>78901</td>
+                  <td>Aug 20, 2021</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-processing">PROCESSING</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+
 {% endblock %}
