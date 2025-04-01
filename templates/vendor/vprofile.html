@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="vp-wrapper">
+    {%include 'includes/cover.html'%}
+    <!-- Main Content -->
+    <main class="vp-main">
+      <!-- Sidebar -->
+      {%include 'includes/vendor_sidebar.html'%}
+      
+      <!-- Dashboard Content -->
+      <section class="vp-content">
+        <div class="vp-content-section">
+          <h2 class="vp-section-heading">RECENT ORDERS</h2>
+          
+          <div class="vp-filter-controls">
+            <select id="vp-orderFilter">
+              <option value="all" selected>select orders</option>
+              <option value="completed">Completed</option>
+              <option value="processing">Processing</option>
+            </select>
+          </div>
+          
+          <div class="vp-table-wrapper">
+            <table class="vp-data-table">
+              <thead>
+                <tr>
+                  <th>ORDER ID</th>
+                  <th>DATE</th>
+                  <th>TOTAL PRICE</th>
+                  <th>CHARGES</th>
+                  <th>RECEIVED</th>
+                  <th>STATUS</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>12345</td>
+                  <td>Feb 8, 2023</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-completed">COMPLETED</span></td>
+                </tr>
+                <tr>
+                  <td>23456</td>
+                  <td>Jul 14, 2021</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-processing">PROCESSING</span></td>
+                </tr>
+                <tr>
+                  <td>34567</td>
+                  <td>Nov 25, 2020</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-completed">COMPLETED</span></td>
+                </tr>
+                <tr>
+                  <td>45678</td>
+                  <td>Mar 3, 2022</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-completed">COMPLETED</span></td>
+                </tr>
+                <tr>
+                  <td>56789</td>
+                  <td>Sep 30, 2019</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-processing">PROCESSING</span></td>
+                </tr>
+                <tr>
+                  <td>78901</td>
+                  <td>Aug 20, 2021</td>
+                  <td>$154</td>
+                  <td>$14</td>
+                  <td>$140</td>
+                  <td><span class="vp-status-processing">PROCESSING</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+{% endblock %}

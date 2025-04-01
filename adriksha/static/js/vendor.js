@@ -1,15 +1,16 @@
 /**
- * Vendor Panel JavaScript - Updated with proper logout handling
+ * Vendor Panel JavaScript - Fixed navigation version
  */
 document.addEventListener('DOMContentLoaded', function() {
-  // DOM Elements
+  // ====================== DOM Elements ======================
   const tableRows = document.querySelectorAll('.vp-data-table tbody tr');
   const filterSelect = document.getElementById('vp-orderFilter');
   const tableWrapper = document.querySelector('.vp-table-wrapper');
   const contentSection = document.querySelector('.vp-content-section');
-  const navItems = document.querySelectorAll('.vp-nav-item:not(.vp-logout-item)'); // Exclude logout item
+  const navItems = document.querySelectorAll('.vp-nav-item');
   
-  // Add CSS transitions
+  // ====================== UI Enhancements ======================
+  // Add CSS transitions to table rows
   document.querySelectorAll('.vp-data-table tbody tr').forEach(row => {
     row.style.transition = 'opacity 0.3s ease, transform 0.3s ease, background-color 0.2s ease';
     row.style.willChange = 'opacity, transform';
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     contentSection.style.transition = 'opacity 0.3s ease';
   }
   
-  // Handle order filtering
+  // ====================== Order Filtering ======================
   filterSelect.addEventListener('change', function() {
     this.classList.add('vp-filter-applied');
     setTimeout(() => this.classList.remove('vp-filter-applied'), 500);
@@ -63,33 +64,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 300);
   });
   
-  // Handle sidebar navigation (excluding logout)
+  // ====================== Fixed Navigation Handler ======================
   navItems.forEach(item => {
     item.addEventListener('click', function(e) {
+      const link = this.querySelector('a');
+      
+      // Only prevent default for links with data-navigate="js"
+      if (!link || link.dataset.navigate !== 'js') {
+        return; // Let the link work normally
+      }
+      
       e.preventDefault();
       
       if (!this.classList.contains('vp-active')) {
+        // Update active state
         navItems.forEach(navItem => navItem.classList.remove('vp-active'));
         this.classList.add('vp-active');
         
+        // Add animation to icon
         const icon = this.querySelector('i');
-        icon.style.transform = 'scale(1.2)';
-        setTimeout(() => icon.style.transform = '', 300);
+        if (icon) {
+          icon.style.transform = 'scale(1.2)';
+          setTimeout(() => icon.style.transform = '', 300);
+        }
         
+        // Update content section
         const menuText = this.querySelector('span').textContent;
-        
-        contentSection.style.opacity = '0';
-        
-        setTimeout(() => {
-          const sectionHeading = document.querySelector('.vp-section-heading');
-          sectionHeading.textContent = menuText === 'DASHBOARD' ? 'RECENT ORDERS' : menuText;
-          contentSection.style.opacity = '1';
-        }, 300);
+        if (contentSection) {
+          contentSection.style.opacity = '0';
+          
+          setTimeout(() => {
+            const sectionHeading = document.querySelector('.vp-section-heading');
+            if (sectionHeading) {
+              sectionHeading.textContent = menuText === 'DASHBOARD' ? 'RECENT ORDERS' : menuText;
+            }
+            contentSection.style.opacity = '1';
+          }, 300);
+        }
       }
     });
   });
   
-  // Handle table row interactions
+  // ====================== Table Row Interactions ======================
   tableRows.forEach(row => {
     row.addEventListener('click', function() {
       const orderId = this.querySelector('td:first-child').textContent;

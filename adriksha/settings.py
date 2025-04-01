@@ -71,6 +71,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'category.context_processor.menu_links' ,  # we wil able to use this in any templates we want
                 'cart.context_processor.counter',
+                'accounts.context_processors.get_vendor',
             ],
         },
     },

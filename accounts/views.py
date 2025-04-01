@@ -3,8 +3,25 @@ from django.contrib import messages, auth
 from .forms import UserForm
 from .models import Account, UserProfile
 from vendor.forms import VendorForm
-from .utils import detectUser\
+from .utils import detectUser
+from django.core.exceptions import PermissionDenied
+from django.contrib.auth.decorators import login_required,user_passes_test
+from vendor.models import Vendor
 
+# restricting the user from accesing the unauthorize pages
+def check_role_SELLER(user):
+    if user.role ==1:
+        return True
+    else:
+        raise PermissionDenied
+    
+def check_role_CUSTOMER(user):
+    if user.role ==2:
+        return True
+    else:
+        raise PermissionDenied
+    
+# userregistration logic
 def registerUser(request):
     if request.user.is_authenticated:
         messages.warning(request, 'You are already logged in!')
@@ -139,16 +156,23 @@ def logout(request):
     return redirect('login')
 
 # Dashboard
+@login_required(login_url ='login')
+@user_passes_test(check_role_CUSTOMER)
 def customerDashboard(request):
     return render(request, 'accounts/customerDashboard.html')
 
-
+@login_required(login_url ='login')
+@user_passes_test(check_role_SELLER)
 def vendorDashboard(request):
-    return render(request, 'accounts/vendorDashboard.html')
+    vendor = Vendor.objects.get(user=request.user)
+    context ={
+        'vendor': vendor
+    }
+    return render(request, 'accounts/vendorDashboard.html', context)
 
 
 # myAccount
-
+@login_required(login_url ='login')
 def myAccount(request):
     user = request.user
     redirectURl =detectUser(user)
