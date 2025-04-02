@@ -1,22 +1,63 @@
-
 <!-- ========================= FOOTER ========================= -->
-<footer class="section-footer border-top">
+ {% load static %}
+<footer class="section-footer">
+	
+	
 	<div class="container">
-		<section class="footer-bottom border-top row">
-			<div class="col-md-2">
-				<p class="text-muted"> &copy 2019 Company name </p>
+		<div class="row footer-content">
+			<div class="col-md-4 footer-column">
+				<img src="{% static 'images/ad-logo.png' %}" alt="Adriksha Logo" class="company-logo">
+				<p>Adriksha brings you authentic handcrafted local products and premium medical herbs, preserving traditional craftsmanship and natural healing.</p>
+				<div class="social-icons">
+					<a href="#" class="facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+					<a href="#" class="instagram" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+					<a href="#" class="tiktok" aria-label="TikTok"><i class="fab fa-tiktok"></i></a>
+					<a href="#" class="youtube" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+				</div>
 			</div>
-			<div class="col-md-8 text-md-center">
-				<span  class="px-2">info@pixsellz.io</span>
-				<span  class="px-2">+879-332-9375</span>
-				<span  class="px-2">Street name 123, Avanue abc</span>
+			
+			<div class="col-md-4 footer-column">
+				<h5>Our Products</h5>
+				<ul class="footer-links">
+					<li><a href="#"><i class="fas fa-chevron-right mr-2" style="font-size: 0.7rem;"></i> Handcrafted Goods</a></li>
+					<li><a href="#"><i class="fas fa-chevron-right mr-2" style="font-size: 0.7rem;"></i> Medical Herbs</a></li>
+					<li><a href="#"><i class="fas fa-chevron-right mr-2" style="font-size: 0.7rem;"></i> Organic Products</a></li>
+					<li><a href="#"><i class="fas fa-chevron-right mr-2" style="font-size: 0.7rem;"></i> Traditional Crafts</a></li>
+					<li><a href="#"><i class="fas fa-chevron-right mr-2" style="font-size: 0.7rem;"></i> Seasonal Specials</a></li>
+				</ul>
 			</div>
-			<div class="col-md-2 text-md-right text-muted">
-				<i class="fab fa-lg fa-cc-visa"></i>
-				<i class="fab fa-lg fa-cc-paypal"></i>
-				<i class="fab fa-lg fa-cc-mastercard"></i>
+			
+			<div class="col-md-4 footer-column">
+				<h5>Stay Updated</h5>
+				<p>Subscribe for updates on new products and herbal remedies</p>
+				<div class="input-group mb-3">
+					<input type="email" class="form-control newsletter-input" placeholder="Your email address">
+					<div class="input-group-append">
+						<button class="btn newsletter-btn" type="button">Subscribe</button>
+					</div>
+				</div>
+				<h5 class="mt-4">Payment Methods</h5>
+				<div class="payment-methods">
+					<!-- Khalti Payment -->
+					<img src="{% static 'images/misc/khalti.jpg' %}" alt="Khalti Payment" class="payment-icon light-mode-payment">
+					<img src="{% static 'images/misc/khalti-white.png' %}" alt="Khalti Payment" class="payment-icon dark-mode-payment">
+					
+				</div>
 			</div>
-		</section>
-	</div><!-- //container -->
-</footer>
-<!-- ========================= FOOTER END // ========================= -->
+		</div>
+		
+		<div class="row footer-bottom">
+			<div class="col-md-6">
+				<p class="copyright">&copy; <script>document.write(new Date().getFullYear())</script> Adriksha. All rights reserved.</p>
+			</div>
+			<div class="col-md-6 text-right contact-info">
+				<span>info.ICP@adriksha.com</span>
+				<span>+977-9805253545</span>
+				<span>Pokhara, Nepal</span>
+			</div>
+		</div>
+	</div>
+	
+	
+	</footer>
+	<!-- ========================= FOOTER END // ========================= -->

@@ -47,21 +47,33 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function toggleDropdown(container, dropdownName) {
-    // If we're toggling the currently active dropdown, just close it
     if (state.activeDropdown === dropdownName) {
       closeAllDropdowns();
       return;
     }
     
-    // Close any open dropdown first
     closeAllDropdowns();
-    
-    // Open the requested dropdown
     container.classList.add('dropdown-active');
     state.activeDropdown = dropdownName;
   }
 
-  // ===== EVENT HANDLERS =====
+  // ===== DARK MODE FUNCTIONS =====
+  function updateDarkModeElements() {
+    // Update logo
+    const logo = document.querySelector('.company-logo');
+    if (logo) {
+      logo.style.filter = state.isDarkMode ? 'brightness(0) invert(1)' : 'none';
+    }
+    
+    // Update payment icons
+    document.querySelectorAll('.light-mode-payment').forEach(icon => {
+      icon.style.display = state.isDarkMode ? 'none' : 'block';
+    });
+    document.querySelectorAll('.dark-mode-payment').forEach(icon => {
+      icon.style.display = state.isDarkMode ? 'block' : 'none';
+    });
+  }
+
   function toggleTheme() {
     state.isDarkMode = !state.isDarkMode;
     
@@ -75,19 +87,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Toggle dark mode class on body
     document.body.classList.toggle('dark-mode', state.isDarkMode);
+    
+    // Update logo and payment icons
+    updateDarkModeElements();
   }
 
+  // ===== OTHER EVENT HANDLERS =====
   function toggleMobileMenu() {
     state.isMobileMenuOpen = !state.isMobileMenuOpen;
-    
-    if (state.isMobileMenuOpen) {
-      elements.mobileMenu.classList.add('show');
-    } else {
-      elements.mobileMenu.classList.remove('show');
-    }
+    elements.mobileMenu.classList.toggle('show', state.isMobileMenuOpen);
   }
-
-  // Removed the handleSearch function since forms are now submitted to Django backend
 
   function changeLanguage(language, langCode) {
     if (elements.selectedLanguageText) {
@@ -96,8 +105,6 @@ document.addEventListener('DOMContentLoaded', function() {
       state.selectedLangCode = langCode;
       localStorage.setItem('selectedLanguage', language);
       localStorage.setItem('selectedLangCode', langCode);
-      
-      // Update checkmarks for language options
       updateCheckmarks();
     }
     closeAllDropdowns();
@@ -106,16 +113,12 @@ document.addEventListener('DOMContentLoaded', function() {
   function changeCurrency(currencyCode) {
     state.selectedCurrencyCode = currencyCode;
     localStorage.setItem('selectedCurrencyCode', currencyCode);
-    
-    // Form language/currency display format
     const displayText = `${state.selectedLangCode.split(' / ')[0]} / ${currencyCode}`;
     if (elements.selectedLanguageText) {
       elements.selectedLanguageText.textContent = displayText;
       state.selectedLanguage = displayText;
       localStorage.setItem('selectedLanguage', displayText);
     }
-    
-    // Update checkmarks for currency options
     updateCheckmarks();
     closeAllDropdowns();
   }
@@ -123,47 +126,34 @@ document.addEventListener('DOMContentLoaded', function() {
   function updateCheckmarks() {
     if (!elements.languageDropdown) return;
     
-    // Remove all checkmarks first
     const langOptions = elements.languageDropdown.querySelectorAll('a[data-lang]');
-    langOptions.forEach(option => {
-      option.classList.remove('active');
-      // Remove any existing checkmarks
-      const checkIcon = option.querySelector('.fa-check');
-      if (checkIcon) {
-        checkIcon.remove();
-      }
-    });
-    
     const currOptions = elements.languageDropdown.querySelectorAll('a[data-currency]');
-    currOptions.forEach(option => {
+    
+    // Clear all checkmarks
+    [...langOptions, ...currOptions].forEach(option => {
       option.classList.remove('active');
-      // Remove any existing checkmarks
       const checkIcon = option.querySelector('.fa-check');
-      if (checkIcon) {
-        checkIcon.remove();
-      }
+      if (checkIcon) checkIcon.remove();
     });
     
-    // Add checkmark to the selected language
+    // Add checkmark to selected language
     const selectedLangEl = elements.languageDropdown.querySelector(`a[data-lang="${state.selectedLangCode}"]`);
     if (selectedLangEl) {
       selectedLangEl.classList.add('active');
       const span = selectedLangEl.querySelector('span');
       if (span && !selectedLangEl.querySelector('.fa-check')) {
-        // Add check icon after the span
         const checkIcon = document.createElement('i');
         checkIcon.className = 'fas fa-check';
         span.insertAdjacentElement('afterend', checkIcon);
       }
     }
     
-    // Add checkmark to the selected currency
+    // Add checkmark to selected currency
     const selectedCurrEl = elements.languageDropdown.querySelector(`a[data-currency="${state.selectedCurrencyCode}"]`);
     if (selectedCurrEl) {
       selectedCurrEl.classList.add('active');
       const span = selectedCurrEl.querySelector('span');
       if (span && !selectedCurrEl.querySelector('.fa-check')) {
-        // Add check icon after the span
         const checkIcon = document.createElement('i');
         checkIcon.className = 'fas fa-check';
         span.insertAdjacentElement('afterend', checkIcon);
@@ -171,95 +161,83 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
-  // Apply initial dark mode state
-  if (state.isDarkMode) {
-    document.body.classList.add('dark-mode');
-    elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
-  }
+  // ===== INITIALIZATION =====
+  function initialize() {
+    // Apply initial dark mode state
+    if (state.isDarkMode) {
+      document.body.classList.add('dark-mode');
+      elements.themeToggle.innerHTML = '<i class="fas fa-moon"></i>';
+      updateDarkModeElements();
+    }
 
-  // Set initial language
-  if (elements.selectedLanguageText) {
-    elements.selectedLanguageText.textContent = state.selectedLanguage;
+    // Set initial language
+    if (elements.selectedLanguageText) {
+      elements.selectedLanguageText.textContent = state.selectedLanguage;
+    }
+    
+    // Initialize checkmarks
+    updateCheckmarks();
+
+    // Set up dark mode observer
+    const darkModeObserver = new MutationObserver(function(mutations) {
+      mutations.forEach(function(mutation) {
+        if (mutation.attributeName === 'class') {
+          updateDarkModeElements();
+        }
+      });
+    });
+
+    darkModeObserver.observe(document.body, {
+      attributes: true,
+      attributeFilter: ['class']
+    });
   }
-  
-  // Initialize checkmarks
-  updateCheckmarks();
 
   // ===== EVENT LISTENERS =====
-  // Theme Toggle
-  elements.themeToggle.addEventListener('click', toggleTheme);
+  elements.themeToggle?.addEventListener('click', toggleTheme);
+  elements.mobileMenuButton?.addEventListener('click', toggleMobileMenu);
   
-  // Mobile Menu
-  elements.mobileMenuButton.addEventListener('click', toggleMobileMenu);
-  
-  // Language Dropdown
-  if (elements.languageDropdownButton) {
-    elements.languageDropdownButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleDropdown(elements.languageDropdownContainer, 'language');
-    });
-  }
-  
-  // Language and Currency Selection
-  if (elements.languageDropdown) {
-    // Language selection
-    const languageOptions = elements.languageDropdown.querySelectorAll('a[data-lang]');
-    languageOptions.forEach(option => {
-      option.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const selectedLanguage = option.getAttribute('data-lang');
-        changeLanguage(selectedLanguage, selectedLanguage);
-      });
-    });
-    
-    // Currency selection
-    const currencyOptions = elements.languageDropdown.querySelectorAll('a[data-currency]');
-    currencyOptions.forEach(option => {
-      option.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        const currencyCode = option.getAttribute('data-currency');
-        changeCurrency(currencyCode);
-      });
-    });
-  }
-  
-  // Account Dropdown
-  if (elements.accountDropdownButton) {
-    elements.accountDropdownButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleDropdown(elements.accountDropdownContainer, 'account');
-    });
-  }
-  
-  // Categories Dropdown
-  if (elements.categoriesDropdownButton) {
-    elements.categoriesDropdownButton.addEventListener('click', (e) => {
-      e.stopPropagation();
-      toggleDropdown(elements.categoriesDropdownContainer, 'categories');
-    });
-  }
-  
-  // Close dropdowns when clicking outside
-  document.addEventListener('click', () => {
-    if (state.activeDropdown) {
-      closeAllDropdowns();
-    }
+  elements.languageDropdownButton?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown(elements.languageDropdownContainer, 'language');
   });
   
-  // Prevent dropdown clicks from propagating
-  document.querySelectorAll('.dropdown-menu').forEach(menu => {
-    menu.addEventListener('click', (e) => {
-      e.stopPropagation();
+  elements.languageDropdown?.querySelectorAll('a[data-lang]').forEach(option => {
+    option.addEventListener('click', (e) => {
+      e.preventDefault();
+      changeLanguage(option.getAttribute('data-lang'), option.getAttribute('data-lang'));
     });
+  });
+  
+  elements.languageDropdown?.querySelectorAll('a[data-currency]').forEach(option => {
+    option.addEventListener('click', (e) => {
+      e.preventDefault();
+      changeCurrency(option.getAttribute('data-currency'));
+    });
+  });
+  
+  elements.accountDropdownButton?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown(elements.accountDropdownContainer, 'account');
+  });
+  
+  elements.categoriesDropdownButton?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggleDropdown(elements.categoriesDropdownContainer, 'categories');
+  });
+  
+  document.addEventListener('click', () => {
+    if (state.activeDropdown) closeAllDropdowns();
+  });
+  
+  document.querySelectorAll('.dropdown-menu').forEach(menu => {
+    menu.addEventListener('click', (e) => e.stopPropagation());
   });
 
-  // Remove event.preventDefault() for links with hrefs that should work
-  // Only prevent default for language/currency selectors
   document.querySelectorAll('a[data-lang], a[data-currency]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      e.preventDefault(); // Only prevent default for language/currency toggles
-    });
+    link.addEventListener('click', (e) => e.preventDefault());
   });
+
+  // Initialize everything
+  initialize();
 });

@@ -3,91 +3,205 @@
 
 {% block content %}
 <div class="vp-wrapper">
-    {%include 'includes/cover.html'%}
-    <!-- Main Content -->
+    {% include 'includes/cover.html' %}
     <main class="vp-main">
-      <!-- Sidebar -->
-      {%include 'includes/vendor_sidebar.html'%}
-      
-      <!-- Dashboard Content -->
-      <section class="vp-content">
-        <div class="vp-content-section">
-          <h2 class="vp-section-heading">RECENT ORDERS</h2>
-          
-          <div class="vp-filter-controls">
-            <select id="vp-orderFilter">
-              <option value="all" selected>select orders</option>
-              <option value="completed">Completed</option>
-              <option value="processing">Processing</option>
-            </select>
-          </div>
-          
-          <div class="vp-table-wrapper">
-            <table class="vp-data-table">
-              <thead>
-                <tr>
-                  <th>ORDER ID</th>
-                  <th>DATE</th>
-                  <th>TOTAL PRICE</th>
-                  <th>CHARGES</th>
-                  <th>RECEIVED</th>
-                  <th>STATUS</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>12345</td>
-                  <td>Feb 8, 2023</td>
-                  <td>$154</td>
-                  <td>$14</td>
-                  <td>$140</td>
-                  <td><span class="vp-status-completed">COMPLETED</span></td>
-                </tr>
-                <tr>
-                  <td>23456</td>
-                  <td>Jul 14, 2021</td>
-                  <td>$154</td>
-                  <td>$14</td>
-                  <td>$140</td>
-                  <td><span class="vp-status-processing">PROCESSING</span></td>
-                </tr>
-                <tr>
-                  <td>34567</td>
-                  <td>Nov 25, 2020</td>
-                  <td>$154</td>
-                  <td>$14</td>
-                  <td>$140</td>
-                  <td><span class="vp-status-completed">COMPLETED</span></td>
-                </tr>
-                <tr>
-                  <td>45678</td>
-                  <td>Mar 3, 2022</td>
-                  <td>$154</td>
-                  <td>$14</td>
-                  <td>$140</td>
-                  <td><span class="vp-status-completed">COMPLETED</span></td>
-                </tr>
-                <tr>
-                  <td>56789</td>
-                  <td>Sep 30, 2019</td>
-                  <td>$154</td>
-                  <td>$14</td>
-                  <td>$140</td>
-                  <td><span class="vp-status-processing">PROCESSING</span></td>
-                </tr>
-                <tr>
-                  <td>78901</td>
-                  <td>Aug 20, 2021</td>
-                  <td>$154</td>
-                  <td>$14</td>
-                  <td>$140</td>
-                  <td><span class="vp-status-processing">PROCESSING</span></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-      </section>
+        {% include 'includes/vendor_sidebar.html' %}
+        
+        <section class="vp-content">
+            <div class="compact-settings-form">
+                <h5 class="form-title">Store Settings</h5>
+                
+                <form action="{% url 'vprofile' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-section">
+                        <div class="form-column">
+                            <!-- Store Information -->
+                            <div class="form-group">
+                                <label>Store Name</label>
+                                {{ vendor_form.vendor_name }}
+                                {% if vendor_form.vendor_name.errors %}
+                                    <div class="error-message">
+                                        {% for error in vendor_form.vendor_name.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Address</label>
+                                {{ profile_form.address }}
+                                <small class="text-muted float-right">Powered by Google</small>
+                                {% if profile_form.address.errors %}
+                                    <div class="error-message">
+                                        {% for error in profile_form.address.errors %}
+                                            <p>{{ error }}</p>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            
+                            
+                            <div class="location-group">
+                                <div class="form-group">
+                                    <label>City</label>
+                                    {{ profile_form.city }}
+                                    {% if profile_form.city.errors %}
+                                        <div class="error-message">
+                                            {% for error in profile_form.city.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>State</label>
+                                    {{ profile_form.state }}
+                                    {% if profile_form.state.errors %}
+                                        <div class="error-message">
+                                            {% for error in profile_form.state.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label>Zip Code</label>
+                                    <input type="number" name="zipcode" id="zipcode" value="{{ profile_form.zipcode.value|default_if_none:'' }}" required>
+                                    {% if profile_form.zipcode.errors %}
+                                        <div class="error-message">
+                                            {% for error in profile_form.zipcode.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="preview-column">
+                            <!-- Store Logo Preview -->
+                            <div class="preview-group">
+                                <label>Store Logo</label>
+                                <div class="preview-container" id="logoPreview">
+                                    {% if profile_form.instance.profile_picture %}
+                                        <img src="{{ profile_form.instance.profile_picture.url }}" class="preview-image">
+                                    {% else %}
+                                        <div class="empty-preview">
+                                            <i class="fas fa-image"></i>
+                                            <span>No logo uploaded</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="file-upload">
+                                    <input type="file" name="profile_picture" id="profilePictureInput" style="display:none;">
+                                    <button type="button" class="upload-btn small" id="changeLogoBtn">
+                                        <i class="fas fa-upload"></i> Change Logo
+                                    </button>
+                                    {% if profile_form.profile_picture.errors %}
+                                        <div class="error-message">
+                                            {% for error in profile_form.profile_picture.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-section">
+                        <div class="form-column">
+                            <!-- Media Uploads -->
+                            <div class="form-group">
+                                <label>Cover Photo</label>
+                                <div class="file-upload">
+                                    <input type="file" name="cover_photo" id="coverPhotoInput" style="display:none;">
+                                    <button type="button" class="upload-btn small" id="uploadCoverBtn">
+                                        <i class="fas fa-upload"></i> Upload Cover
+                                    </button>
+                                    <small>1200×400px recommended</small>
+                                    {% if profile_form.cover_photo.errors %}
+                                        <div class="error-message">
+                                            {% for error in profile_form.cover_photo.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label>Business License</label>
+                                <div class="file-upload">
+                                    <input type="file" name="vendor_license" id="vendorLicenseInput" style="display:none;">
+                                    <button type="button" class="upload-btn small" id="uploadLicenseBtn">
+                                        <i class="fas fa-upload"></i> Upload License
+                                    </button>
+                                    <small>PDF or Image files</small>
+                                    {% if vendor_form.vendor_license.errors %}
+                                        <div class="error-message">
+                                            {% for error in vendor_form.vendor_license.errors %}
+                                                <p>{{ error }}</p>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="preview-column">
+                            <!-- Cover Photo Preview -->
+                            <div class="preview-group">
+                                <label>Cover Photo</label>
+                                <div class="preview-container" id="coverPreview">
+                                    {% if profile_form.instance.cover_photo %}
+                                        <img src="{{ profile_form.instance.cover_photo.url }}" class="preview-image">
+                                    {% else %}
+                                        <div class="empty-preview">
+                                            <i class="fas fa-camera"></i>
+                                            <span>No cover uploaded</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            
+                            <!-- License Preview -->
+                            <div class="preview-group">
+                                <label>License</label>
+                                <div class="preview-container" id="licensePreview">
+                                    {% if vendor_form.instance.vendor_license %}
+                                        {% if vendor_form.instance.vendor_license.url|lower|slice:'-4:' == '.pdf' %}
+                                            <div class="file-preview">
+                                                <i class="fas fa-file-pdf"></i>
+                                                <span>PDF Document</span>
+                                            </div>
+                                        {% else %}
+                                            <img src="{{ vendor_form.instance.vendor_license.url }}" class="preview-image">
+                                        {% endif %}
+                                    {% else %}
+                                        <div class="empty-preview">
+                                            <i class="fas fa-file-alt"></i>
+                                            <span>No license uploaded</span>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary small">
+                            <i class="fas fa-save"></i> Save Changes
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
     </main>
-  </div>
+</div>
+
 {% endblock %}

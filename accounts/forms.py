@@ -1,7 +1,8 @@
 import re
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Account
+from .models import Account,UserProfile
+from django.core.validators import RegexValidator
 
 
 class UserForm(forms.ModelForm):
@@ -42,3 +43,19 @@ class UserForm(forms.ModelForm):
 
         if password and confirm_password and password != confirm_password:
             self.add_error('confirm_password', "Passwords do not match.")
+
+
+class UserProfileForm(forms.ModelForm):
+    address =forms.CharField(widget=forms.TextInput(attrs={'placeholder':'Start typing..', 'required': 'required'}))
+    profile_picture = forms.ImageField(widget=forms.FileInput(attrs={'class':'file-upload-input'}))
+    cover_photo = forms.ImageField(widget=forms.FileInput(attrs={'class':'file-upload-input'}))
+    zipcode = forms.CharField(
+        max_length=10,
+        validators=[RegexValidator(r'^\d+$', message="Zip Code must contain only numbers.")]
+    )
+
+    
+    class Meta:
+        model = UserProfile
+        fields = ['profile_picture', 'cover_photo', 'address', 'state','city','zipcode']
+

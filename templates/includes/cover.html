@@ -1,19 +1,22 @@
-
- <!-- Top Header -->
- <header class="vp-header">
-    <div class="vp-header-content">
+<!-- Top Header -->
+<header class="vp-header">
+  <div class="vp-header-content">
       <div class="vp-brand-logo">
-        <div class="vp-logo">
-            <img src ="{{ vendor.user_profile.profile_picture.url}}" alt="">
-        </div>
+          <div class="vp-logo">
+              <img src="{{ vendor.user_profile.profile_picture.url }}" alt="Vendor Profile Picture">
+          </div>
       </div>
       <div class="vp-shop-info">
-        <h1 class="vp-shop-name">{{ vendor.vendor_name}}</h1> 
-        <p class="vp-shop-location">{{vendor.user_profile.address}}</p>
+          <h1 class="vp-shop-name">{{ vendor.vendor_name }}</h1>
+          <p class="vp-shop-location">
+              {{ vendor.user_profile.address }}, 
+              {{ vendor.user_profile.city }}, 
+              {{ vendor.user_profile.state }} 
+              {{ vendor.user_profile.zipcode }}
+          </p>
       </div>
-    </div>
-    <div class="vp-header-banner">
-      <img src ="{{ vendor.user_profile.cover_photo.url}}" alt="">
-    </div>
-  </header>
-  
+  </div>
+  <div class="vp-header-banner">
+      <img src="{{ vendor.user_profile.cover_photo.url }}" alt="Cover Photo">
+  </div>
+</header>
