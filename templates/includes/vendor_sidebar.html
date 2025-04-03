@@ -1,23 +1,25 @@
 
 <aside class="vp-sidenav">
   <ul class="vp-nav-list">
-    <li class="vp-nav-item vp-active">
-        <a href="{% url 'vendorDashboard' %}" class="vp-nav-link">
-            <i class="fas fa-th-large"></i>
-            <span>DASHBOARD</span>
-        </a>
-    </li>
-    <li class="vp-nav-item">
-        <a href="{% url 'vprofile' %}" class="vp-nav-link">
-            <i class="fas fa-store"></i>
-            <span>MY STORE</span>
-        </a>
-    </li>
-      <li class="vp-nav-item">
-        <a href="#" class="vp-nav-link">
-          <i class="fas fa-bars"></i>
-          <span>ORDER MENU</span>
-        </a>
+        <li class="vp-nav-item {% if request.resolver_match.url_name == 'vendorDashboard' %}vp-active{% endif %}">
+          <a href="{% url 'vendorDashboard' %}" class="vp-nav-link">
+              <i class="fas fa-th-large"></i>
+              <span>DASHBOARD</span>
+          </a>
+      </li>
+      
+      <li class="vp-nav-item {% if request.resolver_match.url_name == 'vprofile' %}vp-active{% endif %}">
+          <a href="{% url 'vprofile' %}" class="vp-nav-link">
+              <i class="fas fa-store"></i>
+              <span>MY STORE</span>
+          </a>
+      </li>
+      
+      <li class="vp-nav-item {% if request.resolver_match.url_name == 'menu_builder' %}vp-active{% endif %}">
+          <a href="{% url 'menu_builder' %}" class="vp-nav-link">
+              <i class="fas fa-bars"></i>
+              <span>ORDER MENU</span>
+          </a>
       </li>
       <li class="vp-nav-item">
         <a href="#" class="vp-nav-link">

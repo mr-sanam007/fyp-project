@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="vp-wrapper">
+    {% include 'includes/cover.html' %}
+    <main class="vp-main">
+        {% include 'includes/vendor_sidebar.html' %}
+        
+        <section class="vp-content">
+            <div class="vp-product-management">
+                <!-- Header with Back Button and Category Name -->
+                <div class="vp-table-header d-flex justify-content-between align-items-center mb-3" style="padding-bottom: 15px;">
+                    <div style="display: flex; align-items: center;">
+                        <a href="{% url 'menu_builder' %}" style="display: inline-block; margin-right: 20px; text-decoration: none;">
+                            <i class="fas fa-chevron-left" style="
+                                font-size: 1.5rem;
+                                color: #6c757d;
+                                transition: color 0.3s ease, transform 0.3s ease;
+                            " onmouseover="
+                                this.style.color='#28a745';
+                                this.style.transform='translateX(-4px)';
+                            " onmouseout="
+                                this.style.color='#6c757d';
+                                this.style.transform='translateX(0)';
+                            "></i>
+                        </a>
+                        <span style="color: #28a745; text-transform: uppercase; font-size: 1.2rem; font-weight: 500;">
+                            {{ category.Category_name }}
+                        </span>
+                    </div>
+                    <div>
+                        <button style="
+                            background: #6c757d;
+                            border: none;
+                            color: white;
+                            padding: 8px 16px;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            transition: all 0.2s ease;
+                            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                        " onmouseover="
+                            this.style.background='#5a6268';
+                            this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
+                        " onmouseout="
+                            this.style.background='#6c757d';
+                            this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
+                        ">
+                            <i class="fas fa-plus-circle" style="opacity: 0.8; margin-right: 5px;"></i> Add Product
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Products Table -->
+                <div class="vp-table-responsive">
+                    <table class="vp-data-table" style="width: 100%; border-collapse: collapse;">
+                        <thead>
+                            <tr style="background-color: #f8f9fa;">
+                                <th style="width: 5%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">ID</th>
+                                <th style="width: 15%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Image</th>
+                                <th style="width: 30%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Product Name</th>
+                                <th style="width: 30%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Description</th>
+                                <th style="width: 20%; padding: 12px 15px; text-align: right; border-bottom: 1px solid #dee2e6;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for product in products %}
+                            <tr style="border-bottom: 1px solid #dee2e6;">
+                                <td style="padding: 12px 15px;">{{ forloop.counter }}</td>
+                                <td style="padding: 12px 15px;">
+                                    {% if product.image %}
+                                    <img src="{{ product.image.url }}" 
+                                         alt="{{ product.product_name }}"
+                                         style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                    {% else %}
+                                    <div style="width: 50px; height: 50px; background: #f8f9fa; border-radius: 4px;"></div>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 12px 15px;">
+                                    <div style="font-weight: 500;">{{ product.product_name }}</div>
+                                </td>
+                                <td style="padding: 12px 15px;">
+                                    {% if product.description %}
+                                    <div style="font-size: 0.875rem; color: #666;">{{ product.description|truncatechars:50 }}</div>
+                                    {% endif %}
+                                </td>
+                                <td style="padding: 12px 15px; text-align: right;">
+                                    <button style="
+                                        background: #007bff;
+                                        border: none;
+                                        color: white;
+                                        padding: 5px 10px;
+                                        border-radius: 4px;
+                                        cursor: pointer;
+                                        transition: all 0.2s ease;
+                                        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                    " onmouseover="
+                                        this.style.background='#0069d9';
+                                        this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
+                                    " onmouseout="
+                                        this.style.background='#007bff';
+                                        this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
+                                    ">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+                                    <button style="
+                                        margin-left: 8px;
+                                        background: #dc3545;
+                                        border: none;
+                                        color: white;
+                                        padding: 5px 10px;
+                                        border-radius: 4px;
+                                        cursor: pointer;
+                                        transition: all 0.2s ease;
+                                        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                    " onmouseover="
+                                        this.style.background='#c82333';
+                                        this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
+                                    " onmouseout="
+                                        this.style.background='#dc3545';
+                                        this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
+                                    ">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" style="padding: 20px; text-align: center; color: #6c757d;">No products found in this category.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

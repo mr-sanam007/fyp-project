@@ -5,9 +5,11 @@ from django.db.models.fields.related import OneToOneField
 class MyAccountManager(BaseUserManager):
     def create_user(self, first_name, last_name, username, email, phone_number, password=None, **extra_fields):
         if not email:
-            raise ValueError('User should have an email address')
+            raise ValueError('User must have an email address')
         if not username:
-            raise ValueError('User should have a username')
+            raise ValueError('User must have a username')
+        if not phone_number:  # Add validation for phone number
+            raise ValueError('User must have a phone number')
         
         email = self.normalize_email(email)
         user = self.model(
@@ -23,13 +25,17 @@ class MyAccountManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, username, email, phone_number, password, **extra_fields):
+    def create_superuser(self, first_name, last_name, username, email, password, phone_number=None, **extra_fields):
+        # Provide default phone number if not specified
+        if phone_number is None:
+            phone_number = '0000000000'  # Or any other default value
+            
         user = self.create_user(
             first_name=first_name,
             last_name=last_name,
             username=username,
             email=email,
-            phone_number=phone_number,
+            phone_number=phone_number,  # Now guaranteed to have a value
             password=password,
             **extra_fields
         )

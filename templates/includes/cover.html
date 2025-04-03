@@ -1,22 +1,26 @@
 <!-- Top Header -->
 <header class="vp-header">
-  <div class="vp-header-content">
-      <div class="vp-brand-logo">
-          <div class="vp-logo">
-              <img src="{{ vendor.user_profile.profile_picture.url }}" alt="Vendor Profile Picture">
-          </div>
-      </div>
-      <div class="vp-shop-info">
-          <h1 class="vp-shop-name">{{ vendor.vendor_name }}</h1>
-          <p class="vp-shop-location">
-              {{ vendor.user_profile.address }}, 
-              {{ vendor.user_profile.city }}, 
-              {{ vendor.user_profile.state }} 
-              {{ vendor.user_profile.zipcode }}
-          </p>
-      </div>
-  </div>
-  <div class="vp-header-banner">
-      <img src="{{ vendor.user_profile.cover_photo.url }}" alt="Cover Photo">
-  </div>
-</header>
+    <div class="vp-header-content">
+        <div class="vp-brand-logo">
+            <div class="vp-logo">
+                {% if vendor.user_profile.profile_picture %}
+                    <img src="{{ vendor.user_profile.profile_picture.url }}" alt="Vendor Profile Picture">
+                {% endif %}
+            </div>
+        </div>
+        <div class="vp-shop-info">
+            <h1 class="vp-shop-name">{{ vendor.vendor_name }}</h1>
+            <p class="vp-shop-location">
+                {% if vendor.user_profile.address %}{{ vendor.user_profile.address }}, {% endif %}
+                {% if vendor.user_profile.city %}{{ vendor.user_profile.city }}, {% endif %}
+                {% if vendor.user_profile.state %}{{ vendor.user_profile.state }} {% endif %}
+                {% if vendor.user_profile.zipcode %}{{ vendor.user_profile.zipcode }}{% endif %}
+            </p>
+        </div>
+    </div>
+    <div class="vp-header-banner">
+        {% if vendor.user_profile.cover_photo %}
+            <img src="{{ vendor.user_profile.cover_photo.url }}" alt="Cover Photo">
+        {% endif %}
+    </div>
+  </header>

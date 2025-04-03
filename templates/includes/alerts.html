@@ -1,7 +1,10 @@
 {% if messages %}
-    <ul>
-        {% for message in messages %}
-            <li class="alert alert-{{ message.tags }}">{{ message }}</li>
-        {% endfor %}
-    </ul>
+<div style="position:fixed;top:20px;right:20px;z-index:1000;max-width:400px">
+  {% for message in messages %}
+  <div style="padding:15px;margin:10px;border-radius:4px;background:{% if message.tags == 'error' %}#f8d7da{% else %}#d4edda{% endif %};animation:slideIn 0.5s forwards, fadeOut 0.5s 2.5s forwards">
+    {{message}} <button onclick="this.parentElement.remove()" style="float:right;background:none;border:none">×</button>
+  </div>
+  {% endfor %}
+</div>
+<style>@keyframes slideIn{to{transform:translateX(0)}} @keyframes fadeOut{to{opacity:0}}</style>
 {% endif %}

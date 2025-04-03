@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="vp-wrapper">
+    {% include 'includes/cover.html' %}
+    <main class="vp-main">
+        {% include 'includes/vendor_sidebar.html' %}
+        
+        <section class="vp-content">
+            <div class="vp-product-management">
+                <div style="max-width: 600px; margin: 0 auto;">
+                    
+                    <!-- Back Button -->
+                    <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                        <a href="{% url 'menu_builder' %}" style="display: inline-block; text-decoration: none;">
+                            <i class="fas fa-chevron-left" style="
+                                font-size: 1.5rem;
+                                color: #6c757d;
+                                transition: color 0.3s ease, transform 0.3s ease;
+                            " onmouseover="
+                                this.style.color='#28a745';
+                                this.style.transform='translateX(-4px)';
+                            " onmouseout="
+                                this.style.color='#6c757d';
+                                this.style.transform='translateX(0)';
+                            "></i>
+                        </a>
+                        <h5 class="vp-section-title" style="margin-left: 15px; margin-bottom: 0;">Edit Your Category</h5>
+                    </div>
+                    
+                    <!-- Form -->
+                    <form action="{% url 'edit_category' category.pk %}" method="POST" style="background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+                        {% csrf_token %}
+                        
+                        <!-- Non-field errors -->
+                        {% if form.non_field_errors %}
+                            <div style="color: #dc3545; font-size: 0.9rem; margin-bottom: 20px; padding: 10px; background-color: #f8d7da; border-radius: 4px;">
+                                {% for error in form.non_field_errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Category Name Field -->
+                        <div style="margin-bottom: 20px;">
+                            <label for="id_Category_name" style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">
+                                Category Name <span style="color: red;">*</span>
+                            </label>
+                            <input type="text" 
+                                   name="Category_name" 
+                                   id="id_Category_name" 
+                                   required
+                                   value="{{ form.Category_name.value|default:category.Category_name }}"
+                                   style="width: 100%;
+                                          padding: 10px 12px;
+                                          border: 1px solid {% if form.Category_name.errors %}#dc3545{% else %}#ddd{% endif %};
+                                          border-radius: 4px;
+                                          font-size: 0.95rem;
+                                          transition: border-color 0.3s ease;"
+                                   onfocus="this.style.borderColor='#007bff'"
+                                   onblur="this.style.borderColor='{% if form.Category_name.errors %}#dc3545{% else %}#ddd{% endif %}'">
+                            {% for error in form.Category_name.errors %}
+                                <div style="color: #dc3545; font-size: 0.85rem; margin-top: 5px;">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Description Field -->
+                        <div style="margin-bottom: 25px;">
+                            <label for="id_description" style="display: block; margin-bottom: 8px; font-weight: 500; color: #333;">
+                                Description (Optional)
+                            </label>
+                            <textarea name="description" 
+                                      id="id_description" 
+                                      rows="4"
+                                      style="width: 100%;
+                                             padding: 10px 12px;
+                                             border: 1px solid {% if form.description.errors %}#dc3545{% else %}#ddd{% endif %};
+                                             border-radius: 4px;
+                                             font-size: 0.95rem;
+                                             transition: border-color 0.3s ease;">{{ form.description.value|default:category.description }}</textarea>
+                            {% for error in form.description.errors %}
+                                <div style="color: #dc3545; font-size: 0.85rem; margin-top: 5px;">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Buttons -->
+                        <div style="display: flex; justify-content: flex-end; gap: 15px;">
+                            <a href="{% url 'menu_builder' %}" style="text-decoration: none;">
+                                <button type="button" 
+                                        style="background: #6c757d;
+                                               border: none;
+                                               color: white;
+                                               padding: 10px 20px;
+                                               border-radius: 4px;
+                                               cursor: pointer;
+                                               transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"
+                                        onmouseover="
+                                            this.style.backgroundColor='#5a6268';
+                                            this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
+                                        "
+                                        onmouseout="
+                                            this.style.backgroundColor='#6c757d';
+                                            this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
+                                        ">
+                                    Cancel
+                                </button>
+                            </a>
+                            <button type="submit" 
+                                    style="background: #28a745;
+                                           border: none;
+                                           color: white;
+                                           padding: 10px 20px;
+                                           border-radius: 4px;
+                                           cursor: pointer;
+                                           transition: all 0.3s ease; box-shadow: 0 1px 3px rgba(0,0,0,0.1);"
+                                    onmouseover="
+                                        this.style.backgroundColor='#218838';
+                                        this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
+                                    "
+                                    onmouseout="
+                                        this.style.backgroundColor='#28a745';
+                                        this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
+                                    ">
+                                <i class="fas fa-save" style="margin-right: 5px;"></i> Update
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+{% endblock %}

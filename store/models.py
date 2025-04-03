@@ -1,9 +1,11 @@
 from django.db import models
 from category.models import Category
 from django.urls import reverse
+from vendor.models import Vendor
 
 
 class Product(models.Model):
+    vendor = models.ForeignKey(Vendor,on_delete=models.CASCADE)
     product_name = models.TextField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
     description = models.TextField(max_length=500, blank=True)
@@ -13,7 +15,7 @@ class Product(models.Model):
     stock = models.IntegerField()
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     created_date = models.DateTimeField(auto_now_add=True)
-    modified_date = models.DateTimeField(auto_now=True)  # should be auto_now, not auto_now_add for modified
+    modified_date = models.DateTimeField(auto_now=True) 
 
 
     def get_url(self):
