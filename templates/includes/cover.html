@@ -21,6 +21,7 @@
     <div class="vp-header-banner">
         {% if vendor.user_profile.cover_photo %}
             <img src="{{ vendor.user_profile.cover_photo.url }}" alt="Cover Photo">
+            {% else %}
         {% endif %}
     </div>
   </header>

@@ -28,18 +28,19 @@
                         </a>
 
                         <!-- Add Product Button -->
-                        <button style="margin-left: 10px;
-                                    background: #6c757d;
-                                    border: none;
-                                    color: white;
-                                    padding: 8px 16px;
-                                    border-radius: 4px;
-                                    cursor: pointer;
-                                    transition: box-shadow 0.2s ease;"
-                                onmouseover="this.style.boxShadow='0 0 10px rgba(108, 117, 125, 0.5)'"
-                                onmouseout="this.style.boxShadow='none'">
-                            <i class="fas fa-plus-circle" style="opacity: 0.8;"></i> Add Product
-                        </button>
+                        <a href="{% url 'add_product' %}" style="text-decoration: none; margin-left: 10px;">
+                            <button style="background: #6c757d;
+                                        border: none;
+                                        color: white;
+                                        padding: 8px 16px;
+                                        border-radius: 4px;
+                                        cursor: pointer;
+                                        transition: box-shadow 0.2s ease;"
+                                    onmouseover="this.style.boxShadow='0 0 10px rgba(108, 117, 125, 0.5)'"
+                                    onmouseout="this.style.boxShadow='none'">
+                                <i class="fas fa-plus-circle" style="opacity: 0.8;"></i> Add Product
+                            </button>
+                        </a>
                     </div>
                 </div>
 

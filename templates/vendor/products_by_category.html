@@ -30,7 +30,7 @@
                         </span>
                     </div>
                     <div>
-                        <button style="
+                        <a href="{% url 'add_product' %}" style="
                             background: #6c757d;
                             border: none;
                             color: white;
@@ -39,6 +39,8 @@
                             cursor: pointer;
                             transition: all 0.2s ease;
                             box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                            text-decoration: none;
+                            display: inline-block;
                         " onmouseover="
                             this.style.background='#5a6268';
                             this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
@@ -47,7 +49,7 @@
                             this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
                         ">
                             <i class="fas fa-plus-circle" style="opacity: 0.8; margin-right: 5px;"></i> Add Product
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -58,8 +60,8 @@
                             <tr style="background-color: #f8f9fa;">
                                 <th style="width: 5%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">ID</th>
                                 <th style="width: 15%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Image</th>
-                                <th style="width: 30%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Product Name</th>
-                                <th style="width: 30%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Description</th>
+                                <th style="width: 40%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Product</th>
+                                <th style="width: 20%; padding: 12px 15px; text-align: left; border-bottom: 1px solid #dee2e6;">Status</th>
                                 <th style="width: 20%; padding: 12px 15px; text-align: right; border-bottom: 1px solid #dee2e6;">Actions</th>
                             </tr>
                         </thead>
@@ -78,14 +80,21 @@
                                 </td>
                                 <td style="padding: 12px 15px;">
                                     <div style="font-weight: 500;">{{ product.product_name }}</div>
+                                    {% if product.description %}
+                                    <div style="font-size: 0.875rem; color: #666; margin-top: 4px;">
+                                        {{ product.description|truncatechars:50 }}
+                                    </div>
+                                    {% endif %}
                                 </td>
                                 <td style="padding: 12px 15px;">
-                                    {% if product.description %}
-                                    <div style="font-size: 0.875rem; color: #666;">{{ product.description|truncatechars:50 }}</div>
+                                    {% if product.is_available %}
+                                    <span style="color: #28a745; font-weight: 500;">Available</span>
+                                    {% else %}
+                                    <span style="color: #dc3545; font-weight: 500;">Not Available</span>
                                     {% endif %}
                                 </td>
                                 <td style="padding: 12px 15px; text-align: right;">
-                                    <button style="
+                                    <a href="{% url 'edit_product' product.id %}" style="
                                         background: #007bff;
                                         border: none;
                                         color: white;
@@ -94,6 +103,8 @@
                                         cursor: pointer;
                                         transition: all 0.2s ease;
                                         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                                        text-decoration: none;
+                                        display: inline-block;
                                     " onmouseover="
                                         this.style.background='#0069d9';
                                         this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
@@ -102,9 +113,14 @@
                                         this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
                                     ">
                                         <i class="fas fa-edit"></i>
-                                    </button>
+                                    </a>
 
-                                    <button style="
+
+                                    <a href="#" 
+                                    onclick="if(confirm('Are you sure you want to delete this product?')) { 
+                                                 window.location.href='{% url 'delete_product' product.id %}'; 
+                                             }" 
+                                    style="
                                         margin-left: 8px;
                                         background: #dc3545;
                                         border: none;
@@ -114,16 +130,17 @@
                                         cursor: pointer;
                                         transition: all 0.2s ease;
                                         box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-                                    " onmouseover="
+                                    " 
+                                    onmouseover="
                                         this.style.background='#c82333';
                                         this.style.boxShadow='0 2px 6px rgba(0,0,0,0.15)';
-                                    " onmouseout="
+                                    " 
+                                    onmouseout="
                                         this.style.background='#dc3545';
                                         this.style.boxShadow='0 1px 3px rgba(0,0,0,0.1)';
                                     ">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
-                                </td>
+                                    <i class="fas fa-trash"></i>
+                                 </a>          </td>
                             </tr>
                             {% empty %}
                             <tr>
