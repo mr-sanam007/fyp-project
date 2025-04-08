@@ -1,5 +1,4 @@
-{% load static %} <!-- Add this line at the top of your template -->
-
+{% load static %}
 <!DOCTYPE HTML>
 <html lang="en">
 <head>
@@ -7,11 +6,8 @@
     <meta http-equiv="pragma" content="no-cache" />
     <meta http-equiv="cache-control" content="max-age=604800" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <title>Adriksha | your local shopping buddy</title>
-
     <!-- Link to your custom CSS files -->
-    
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
     <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
@@ -19,23 +15,25 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'images/ad-logo.png' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" rel="stylesheet">
     <link href="{% static 'css/ui.css' %}" rel="stylesheet">
     <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)">
 </head>
 <body>
-    <!-- Navbar -->
+    <!-- Alerts are always displayed -->
     {% include 'includes/alerts.html' %}
+
     {% include 'includes/navbar.html' %}
-        
+      
     {% block content %}
     <!-- Content goes here -->
     {% endblock %}
 
-    <!-- Footer -->
     {% include 'includes/footer.html' %}
+       
+      
+    
 
     <!-- Scripts -->
     {% comment %} <script src="{% static 'js/jquery-2.0.0.min.js' %}"></script> {% endcomment %}

@@ -55,7 +55,7 @@
   /* Main Wrapper */
   .vp-wrapper {
     width: 100%;
-    max-width: 1200px;
+    max-width: 1600px;
     margin: 20px auto;
     box-shadow: var(--vp-shadow-lg);
     background-color: var(--vp-white);
