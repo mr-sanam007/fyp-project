@@ -15,7 +15,7 @@ def detectUser(user):
         redirectUrl = "/admin"
     return redirectUrl
 
-def send_verfication_email(request, user,mail_subject,email_template):
+def send_verification_email (request, user,mail_subject,email_template):
     from_email = settings.DEFAULT_FROM_EMAIL  
     current_site = get_current_site(request)
     message = render_to_string(email_template, {

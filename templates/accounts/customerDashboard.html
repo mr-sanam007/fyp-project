@@ -1,10 +1,109 @@
 {% extends 'base.html' %}
 {% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dashboard.css' %}">
+{% endblock %}
+
 {% block content %}
+<div class="dashboard-container">
+    <div class="container">
+        <div class="row">
+            <aside class="col-md-3">
+                <div class="dashboard-sidebar">
+                    <h4 class="mb-3">My Account</h4>
+                    <nav class="dashboard-nav">
+                        <a href="#" class="dashboard-nav-item active">
+                            <i class="fas fa-shopping-bag"></i> My Orders
+                        </a>
+                        <a href="#" class="dashboard-nav-item">
+                            <i class="fas fa-exchange-alt"></i> Transactions
+                        </a>
+                        <a href="#" class="dashboard-nav-item">
+                            <i class="fas fa-undo"></i> Returns & Refunds
+                        </a>
+                        <a href="#" class="dashboard-nav-item">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                        <a href="#" class="dashboard-nav-item">
+                            <i class="fas fa-store"></i> My Products
+                        </a>
+                        <a href="#" class="dashboard-nav-item">
+                            <i class="fas fa-truck"></i> Received Orders
+                        </a>
+                    </nav>
+                    <a class="dashboard-logout-btn" href="{% url 'logout' %}">
+                        <i class="fas fa-power-off"></i>
+                        <span>Log Out</span>
+                    </a>
+                </div>
+            </aside>
 
-<h1>{{ user.username }} this is customer page</h1>
-{% if user.is_authenticated %}
-<a href="{% url 'logout' %}" class="btn btn-outline-danger ml-3">Logout</a>
-{% endif %}
+            <main class="col-md-9">
+                <div class="dashboard-main">
+                    <h2 class="mb-4">Recent Orders</h2>
+                    
+                    <div class="dashboard-card">
+                        <div class="dashboard-card-header">
+                            <div class="d-flex justify-content-between">
+                                <strong>Order #6123456789</strong>
+                                <span>December 16, 2022</span>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-8">
+                                    <h6 class="text-muted">Delivery Information</h6>
+                                    <p>
+                                        <strong>Michael Jackson</strong><br>
+                                        Phone: +1234567890<br>
+                                        Email: myname@pixsellz.com<br>
+                                        Location: Home number, Building name, Street 123, Tashkent, UZB
+                                    </p>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6 class="text-muted">Payment Details</h6>
+                                    <p>
+                                        <span class="text-success">
+                                            <i class="fab fa-cc-visa"></i> Visa **** 4216
+                                        </span><br>
+                                        Subtotal: $356<br>
+                                        Shipping: $56<br>
+                                        <strong>Total: $456</strong>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="dashboard-order-item">
+                            <img src="{% static 'images/items/1.jpg' %}" class="dashboard-order-img">
+                            <div class="dashboard-order-details">
+                                <h5 class="dashboard-order-title">Product name goes here</h5>
+                                <div class="dashboard-order-price">$145.00</div>
+                                <div class="dashboard-order-seller">Sold by: Nike clothing</div>
+                            </div>
+                            <div class="dashboard-order-actions">
+                                <a href="#" class="dashboard-btn dashboard-btn-outline">Track</a>
+                                <a href="#" class="dashboard-btn dashboard-btn-primary">Details</a>
+                            </div>
+                        </div>
+
+                        <div class="dashboard-order-item">
+                            <img src="{% static 'images/items/2.jpg' %}" class="dashboard-order-img">
+                            <div class="dashboard-order-details">
+                                <h5 class="dashboard-order-title">Another product name</h5>
+                                <div class="dashboard-order-price">$15.00</div>
+                                <div class="dashboard-order-seller">Sold by: ABC shop</div>
+                            </div>
+                            <div class="dashboard-order-actions">
+                                <a href="#" class="dashboard-btn dashboard-btn-outline">Track</a>
+                                <a href="#" class="dashboard-btn dashboard-btn-primary">Details</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+</div>
 {% endblock %}

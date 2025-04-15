@@ -44,11 +44,13 @@ INSTALLED_APPS = [
     'store',
     'cart',
     'vendor',
+    'orders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -72,6 +74,7 @@ TEMPLATES = [
                 'category.context_processor.menu_links' ,  # we wil able to use this in any templates we want
                 'cart.context_processor.counter',
                 'accounts.context_processors.get_vendor',
+             
             ],
         },
     },

@@ -9,6 +9,10 @@
     <title>Adriksha | your local shopping buddy</title>
     <!-- Link to your custom CSS files -->
     <link rel="stylesheet" href="{% static 'css/navbar.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cart.css' %}">
+    <link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+    <link rel="stylesheet" href="{% static 'css/customers.css' %}">
+    <link rel="stylesheet" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
     <link rel="stylesheet" href="{% static 'css/accounts.css' %}">
     <link rel="stylesheet" href="{% static 'css/vendor.css' %}">
@@ -17,8 +21,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="{% static 'css/bootstrap.css' %}" rel="stylesheet">
     <link href="{% static 'fonts/fontawesome/css/all.min.css' %}" rel="stylesheet">
-    <link href="{% static 'css/ui.css' %}" rel="stylesheet">
+    {% comment %} <link href="{% static 'css/ui.css' %}" rel="stylesheet"> {% endcomment %}
     <link href="{% static 'css/responsive.css' %}" rel="stylesheet" media="only screen and (max-width: 1200px)">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     <!-- Alerts are always displayed -->

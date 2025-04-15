@@ -7,7 +7,7 @@ from .utils import detectUser
 from django.core.exceptions import PermissionDenied
 from django.contrib.auth.decorators import login_required,user_passes_test
 from vendor.models import Vendor
-from  accounts.utils import send_verfication_email
+from  accounts.utils import send_verification_email 
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
 
@@ -41,27 +41,25 @@ def registerUser(request):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
             phone_number = form.cleaned_data['phone_number']  
-
-            # Include phone_number in create_user() if your model requires it
             account = Account.objects.create_user(
                 first_name=first_name,
                 last_name=last_name,
                 username=username,
                 email=email,
                 password=password,
-                phone_number=phone_number  # ADD THIS
+                phone_number=phone_number 
             )
             account.role = Account.CUSTOMER
             account.save()
 
             # send verification email
             mail_subject = "please activate your account"
-            email_template = "accounts/emails/account_verification.html"
-            send_verfication_email(request, account,mail_subject,email_template)
+            email_template = "accounts/email/account_verification_email.html"
+            send_verification_email (request, account,mail_subject,email_template)
             messages.success(request, 'Account created successfully!')
             return redirect('registerUser')
         else:
-            print("Form errors:", form.errors)  # Check console for validation errors
+            print("Form errors:", form.errors)  
     else:
         form = UserForm()
 
@@ -85,7 +83,7 @@ def activate(request , uidb64, token):
         return redirect('myAccount')
     
 
-
+# seller registration logic
 def vendorsignup(request):
     # Redirect if user is already logged in
     if request.user.is_authenticated:
@@ -121,8 +119,8 @@ def vendorsignup(request):
             vendor.save()
             # send verification email
             mail_subject = "please activate your account"
-            email_template = "accounts/emails/account_verification.html"
-            send_verfication_email( request, user,mail_subject,email_template)
+            email_template = "accounts/email/account_verification_email.html"
+            send_verification_email ( request, user,mail_subject,email_template)
 
             messages.success(request, 'Your account has been created successfully! Please wait for approval.')
             return redirect('vendorsignup')
@@ -139,6 +137,7 @@ def vendorsignup(request):
     }
     return render(request, 'accounts/vendor_signup.html', context)
 
+# login logic
 def login(request):
     if request.user.is_authenticated:
         messages.warning(request, 'You are already logged in!')
@@ -196,8 +195,12 @@ def vendorDashboard(request):
 @login_required(login_url ='login')
 def myAccount(request):
     user = request.user
-    redirectURl =detectUser(user)
-    return render(request, 'accounts/login.html')
+    if user.role == 1:  # Seller
+        return redirect('vendorDashboard')
+    elif user.role == 2:  # Customer
+        return redirect('customerDashboard')
+    else:
+        return redirect('login')
 
 
 # forget password
@@ -211,7 +214,7 @@ def forgot_password(request):
             # send reset password email
             mail_subject ='Reset Your Password'
             email_template = 'accounts/email/reset_password_email.html'
-            send_verfication_email(request, user,mail_subject, email_template)
+            send_verification_email(request, user,mail_subject, email_template)
             messages.success(request, 'Password reset email has been sent to your email address')
             return redirect('myAccount')
         else:
@@ -235,6 +238,8 @@ def reset_password(request):
             user.set_password(password)
             user.is_active = True
             user.save()
+            messages.success(request, 'Password reset successfully')
+            return redirect('login')
             messages.success(request, 'Password reset successfully')
             return redirect('login')
         else:

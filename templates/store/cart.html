@@ -1,111 +1,131 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load humanize %}  <!-- Add this for better number formatting -->
+{% load humanize %}  
 
 {% block content %}
 
-<section class="section-content padding-y bg">
+<section class="cart-section">
     <div class="container">
+        <div class="cart-header">
+            <h1 class="cart-title">Shopping Cart</h1>
+            <p class="cart-subtitle">Review your items before checkout</p>
+        </div>
+
         {% if not cart_items %}
-            <div class="text-center">
-                <h3 class="mb-4">Your shopping cart is empty</h3>
-                <a href="{% url 'store' %}" class="btn btn-primary">Continue Shopping</a>
+            <div class="cart-empty">
+                <div class="cart-empty-icon">
+                    <i class="fas fa-shopping-cart"></i>
+                </div>
+                <h3>Your shopping cart is empty</h3>
+                <p>Looks like you haven't added anything to your cart yet.</p>
+                <a href="{% url 'store' %}" class="cart-btn-continue-shopping">Browse Products</a>
             </div>
         {% else %}
-            <div class="row">
-                <aside class="col-lg-9">
-                    <div class="card">
-                        <table class="table table-borderless table-shopping-cart">
-                            <thead class="text-muted">
-                                <tr class="small text-uppercase">
-                                    <th scope="col">Product</th>
-                                    <th scope="col" width="120">Quantity</th>
-                                    <th scope="col" width="120">Price</th>
-                                    <th scope="col" class="text-right" width="200"> </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for cart_item in cart_items %}
-                                <tr>
-                                    <td>
-                                        <figure class="itemside align-items-center">
-                                            <div class="aside">
-                                                {% if cart_item.product.image %}
-                                                    <img src="{{ cart_item.product.image.url }}" class="img-sm" alt="{{ cart_item.product.product_name }}">
-                                                {% else %}
-                                                    <img src="{% static 'images/default-product.png' %}" class="img-sm" alt="No image available">
-                                                {% endif %}
-                                            </div>
-                                            <figcaption class="info">
-                                                <a href="{{ cart_item.product.get_url }}" class="title text-dark">{{ cart_item.product.product_name }}</a>
-                                                <p class="text-muted small">
-                                                    {% if cart_item.variations.all %}
-                                                        {% for item in cart_item.variations.all %}
-                                                            {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}<br>
-                                                        {% endfor %}
-                                                    {% endif %}
-                                                </p>
-                                            </figcaption>
-                                        </figure>
-                                    </td>
-                                    <td>
-                                        <div class="input-group input-spinner">
-                                            <div class="input-group-prepend">
-                                                <a href="{% url 'remove_cart' cart_item.product.id %}" class="btn btn-light" type="button"> 
-                                                    <i class="fa fa-minus"></i> 
-                                                </a>
-                                            </div>
-                                            <input type="text" class="form-control text-center" value="{{ cart_item.quantity }}" readonly>
-                                            <div class="input-group-append">
-                                                <a href="{% url 'add_cart' cart_item.product.id %}" class="btn btn-light" type="button"> 
-                                                    <i class="fa fa-plus"></i> 
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="price-wrap">
-                                            <var class="price">NPR {{ cart_item.item_total|floatformat:2|intcomma }}</var>
-                                            <small class="text-muted">NPR {{ cart_item.product.price|floatformat:2|intcomma }} each</small>
-                                        </div>
-                                    </td>
-                                    <td class="text-right">
-                                        <a href="{% url 'remove_cart_item' cart_item.product.id %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to remove this item?')"> 
-                                            Remove
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+            <div class="cart-content">
+                <div class="cart-items-container">
+                    <div class="cart-items-header">
+                        <div class="cart-header-product">Product</div>
+                        <div class="cart-header-quantity">Quantity</div>
+                        <div class="cart-header-price">Price</div>
+                        <div class="cart-header-action"></div>
                     </div>
-                </aside>
-                
-                <aside class="col-lg-3">
-                    <div class="card">
-                        <div class="card-body">
-                            <dl class="dlist-align">
-                                <dt>Subtotal:</dt>
-                                <dd class="text-right">NPR {{ total|floatformat:2|intcomma }}</dd>
-                            </dl>
-                            <dl class="dlist-align">
-                                <dt>Shipping:</dt>
-                                <dd class="text-right">NPR {{ shipping_charge|floatformat:2|intcomma }}</dd>
-                            </dl>
-                            <hr>
-                            <dl class="dlist-align">
-                                <dt>Total:</dt>
-                                <dd class="text-right text-dark b"><strong>NPR {{ grand_total|floatformat:2|intcomma }}</strong></dd>
-                            </dl>
-                            <hr>
-                            <p class="text-center mb-3">
-                                <img src="{% static 'images/misc/khalti.jpg' %}" style="height: 26px;" alt="Payment Methods">
-                            </p>
-                            <a href="#" class="btn btn-primary btn-block">Proceed to Checkout</a>
-                            <a href="{% url 'store' %}" class="btn btn-light btn-block">Continue Shopping</a>
+
+                    {% for cart_item in cart_items %}
+                    <div class="cart-item-row">
+                        <div class="cart-item-product-cell">
+                            <div class="cart-product-image">
+                                {% if cart_item.product.image %}
+                                    <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.product_name }}">
+                                {% else %}
+                                    <img src="{% static 'images/default-product.png' %}" alt="No image available">
+                                {% endif %}
+                            </div>
+                            <div class="cart-product-details">
+                                <a href="{{ cart_item.product.get_url }}" class="cart-product-name">{{ cart_item.product.product_name }}</a>
+                                {% if cart_item.variations.all %}
+                                <div class="cart-product-variations">
+                                    <span>Color: 
+                                        {% for variation in cart_item.variations.all %}
+                                            {% if variation.variation_category|lower == 'color' %}
+                                                {{ variation.variation_value|capfirst }}
+                                            {% endif %}
+                                        {% empty %}
+                                            N/A
+                                        {% endfor %}
+                                    </span>
+                                    <span>Size: 
+                                        {% for variation in cart_item.variations.all %}
+                                            {% if variation.variation_category|lower == 'size' %}
+                                                {{ variation.variation_value|capfirst }}
+                                            {% endif %}
+                                        {% empty %}
+                                            N/A
+                                        {% endfor %}
+                                    </span>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="cart-item-quantity-cell">
+                            <div class="cart-quantity-control">
+                                <a href="{% url 'remove_cart' cart_item.product.id %}?variations={{ cart_item.variation_ids_str }}" class="cart-quantity-btn cart-quantity-decrease">
+                                    <i class="fas fa-minus"></i>
+                                </a>
+                                <input type="text" class="cart-quantity-input" value="{{ cart_item.quantity }}" readonly>
+                                <a href="{% url 'add_cart' cart_item.product.id %}?variations={{ cart_item.variation_ids_str }}" class="cart-quantity-btn cart-quantity-increase">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="cart-item-price-cell">
+                            <div class="cart-item-total">NPR {{ cart_item.item_total|floatformat:2|intcomma }}</div>
+                            <div class="cart-item-unit-price">NPR {{ cart_item.product.price|floatformat:2|intcomma }} each</div>
+                        </div>
+
+                        <div class="cart-item-action-cell">
+                            <a href="{% url 'remove_cart_item' cart_item.product.id %}?variations={{ cart_item.variation_ids_str }}" class="cart-remove-item-btn" onclick="return confirm('Are you sure you want to remove this item?')">
+                                <i class="fas fa-trash-alt"></i>
+                                <span>Remove</span>
+                            </a>
                         </div>
                     </div>
-                </aside>
+                    {% endfor %}
+                </div>
+
+                <div class="cart-summary-card">
+                    <div class="cart-summary-header">
+                        <h3>Order Summary</h3>
+                    </div>
+                    <div class="cart-summary-content">
+                        <div class="cart-summary-row">
+                            <span class="cart-summary-label">Subtotal</span>
+                            <span class="cart-summary-value">NPR {{ total|floatformat:2|intcomma }}</span>
+                        </div>
+                        <div class="cart-summary-row">
+                            <span class="cart-summary-label">Shipping</span>
+                            <span class="cart-summary-value">NPR {{ shipping_charge|floatformat:2|intcomma }}</span>
+                        </div>
+                        <div class="cart-summary-divider"></div>
+                        <div class="cart-summary-row cart-summary-total">
+                            <span class="cart-summary-label">Total</span>
+                            <span class="cart-summary-value">NPR {{ grand_total|floatformat:2|intcomma }}</span>
+                        </div>
+                    </div>
+
+                    <div class="cart-payment-methods">
+                        <span class="cart-payment-label">We Accept:</span>
+                        <div class="cart-payment-icons">
+                            <img src="{% static 'images/misc/khalti.jpg' %}" alt="Payment Methods">
+                        </div>
+                    </div>
+
+                    <div class="cart-summary-actions">
+                        <a href="{% url 'checkout' %}" class="cart-btn-checkout">Proceed to Checkout</a>
+                        <a href="{% url 'store' %}" class="cart-btn-continue">Continue Shopping</a>
+                    </div>
+                </div>
             </div>
         {% endif %}
     </div>

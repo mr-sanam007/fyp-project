@@ -1,51 +1,101 @@
 {% extends 'base.html'%}
-{%load static%}
+{% load static %}
 {% block content %}
 
 <!-- ========================= SECTION MAIN ========================= -->
 <section class="section-intro padding-y-sm">
 <div class="container">
 
-<div class="intro-banner-wrap">
-	<img src="{% static 'images/banners/1.jpg' %}" class="img-fluid rounded">
-</div>
-
 </div> <!-- container //  -->
 </section>
 <!-- ========================= SECTION MAIN END// ========================= -->
 
-<!-- ========================= SECTION  ========================= -->
-<section class="section-name padding-y-sm">
+<!-- ========================= SECTION POPULAR PRODUCTS ========================= -->
+<section class="section-products padding-y">
 <div class="container">
-
-<header class="section-heading">
-	<a href="{%url 'store' %}" class="btn btn-outline-primary float-right">See all</a>
-	<h3 class="section-title">Popular products</h3>
-</header><!-- sect-heading -->
-
-	
-<div class="row">
-    {% for product in products %}
-    <div class="col-md-3">
-        <div class="card card-product-grid">
-            <a href="{{product.get_url}}" class="img-wrap"> 
-                <img src="{{ product.image.url }}" alt="{{ product.product_name }}"> 
-            </a>
-            <figcaption class="info-wrap">
-                <a href="{{product.get_url}}" class="title">{{ product.product_name }}</a>
-                <div class="price mt-1">NPR {{ product.price }}</div> <!-- price-wrap.// -->
-            </figcaption>
+    <header class="section-heading text-center mb-5">
+        <h3 class="section-title">Popular products</h3>
+    </header><!-- sect-heading -->
+    
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 col-6 mb-4">
+            <div class="product-card">
+                {% if product.is_featured %}
+                <div class="ribbon ribbon-hot">HOT</div>
+                {% endif %}
+                {% if product.is_sale %}
+                <div class="ribbon ribbon-sale">SALE</div>
+                {% endif %}
+                <a href="{{product.get_url}}" class="product-img-wrap"> 
+                    <img src="{{ product.image.url }}" alt="{{ product.product_name }}" class="product-img"> 
+                </a>
+                <div class="product-action-wrap">
+                    <div class="product-actions">
+                        <button type="button" class="btn-action">
+                            <i class="fas fa-heart"></i>
+                        </button>
+                        <a href="{% url 'add_cart' product.id %}" class="btn-action">
+                            <i class="fas fa-shopping-cart"></i>
+                        </a>
+                        <button type="button" class="btn-action">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="product-info text-center">
+                    <h5 class="product-title"><a href="{{product.get_url}}">{{ product.product_name }}</a></h5>
+                    <div class="product-price">NPR {{ product.price }}</div>
+                </div>
+            </div>
+        </div> <!-- col.// -->
+        {% endfor %}
+    </div>
+    
+    <!-- Pagination with static dots -->
+    <div class="pagination-wrap text-center mt-4">
+        <div class="pagination-dots">
+            <!-- Static pagination dots like in the reference image -->
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot active"></span>
+            <span class="dot"></span>
         </div>
-    </div> <!-- col.// -->
-    {% endfor %}
-</div>
-
-
+    </div>
 </div><!-- container // -->
 </section>
-<!-- ========================= SECTION  END// ========================= -->
+<!-- ========================= SECTION POPULAR PRODUCTS END// ========================= -->
 
+<!-- ========================= SECTION FEATURED VENDORS ========================= -->
+<section class="section-vendors bg-light padding-y">
+<div class="container">
+    <header class="section-heading text-center mb-5">
+        <h3 class="section-title">Our Vendors</h3>
+    </header>
 
-</body>
-</html>
+    <div class="row">
+        {% for vendor in vendor %}
+        <div class="col-md-3 col-6 mb-4">
+            <div class="vendor-card">
+                <div class="vendor-logo">
+                    {% if vendor.user_profile.profile_picture %}
+                    <img src="{{ vendor.user_profile.profile_picture.url }}" alt="{{ vendor.vendor_name }}">
+                    {% else %}
+                    <img src="{% static 'images/default-profile.png' %}" alt="{{ vendor.vendor_name }}">
+                    {% endif %}
+                </div>
+                <div class="vendor-info text-center">
+                    <h5 class="vendor-name">{{ vendor.vendor_name }}</h5>
+                    <span class="vendor-products">{{ vendor.products_count }} Products</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+</section>
+<!-- ========================= SECTION FEATURED VENDORS END// ========================= -->
+
 {% endblock %}

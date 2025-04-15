@@ -25,5 +25,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('store/', include('store.urls')),  # Include store app URLs
     path('cart/', include('cart.urls')),  # Include cart app URLs
-    path('accounts/', include('accounts.urls'))
+    path('accounts/', include('accounts.urls')),
+    path('i18n/', include('django.conf.urls.i18n')),
+   
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
