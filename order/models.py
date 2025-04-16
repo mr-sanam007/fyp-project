@@ -1,12 +1,14 @@
 from django.db import models
-from accounts.models import Account  # Correct import
+from accounts.models import Account
+from store.models import Product, Variation
+
 
 class Payment(models.Model):
     PAYMENT_METHOD = (
         ('PayPal', 'PayPal'),
-        ('RazorPay', 'RazorPay'),
+        ('RazorPay', 'RazorPay'), 
     )
-    user = models.ForeignKey(Account, on_delete=models.CASCADE)  # Fixed reference
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
     transaction_id = models.CharField(max_length=100)
     payment_method = models.CharField(choices=PAYMENT_METHOD, max_length=100)
     amount = models.CharField(max_length=10)
@@ -16,6 +18,7 @@ class Payment(models.Model):
     def __str__(self):
         return self.transaction_id
 
+
 class Order(models.Model):
     STATUS = (
         ('New', 'New'),
@@ -24,7 +27,7 @@ class Order(models.Model):
         ('Cancelled', 'Cancelled'),
     )
 
-    user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)  # Fixed reference
+    user = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
     payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
     order_number = models.CharField(max_length=20)
     first_name = models.CharField(max_length=50)
@@ -35,9 +38,9 @@ class Order(models.Model):
     country = models.CharField(max_length=15, blank=True)
     state = models.CharField(max_length=15, blank=True)
     city = models.CharField(max_length=50)
-    pin_code = models.CharField(max_length=10)
+    zip_code = models.CharField(max_length=10)
     total = models.FloatField()
-    tax_data = models.JSONField(blank=True, help_text="Data format: {'tax_type':{'tax_percentage':'tax_amount'}}")
+    tax_data = models.JSONField(blank=True, help_text = "Data format: {'tax_type':{'tax_percentage':'tax_amount'}}")
     total_tax = models.FloatField()
     payment_method = models.CharField(max_length=25)
     status = models.CharField(max_length=15, choices=STATUS, default='New')
@@ -45,9 +48,28 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Concatenate first name and last name
     @property
     def name(self):
         return f'{self.first_name} {self.last_name}'
 
     def __str__(self):
         return self.order_number
+
+
+class OrderProduct(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    payment = models.ForeignKey(Payment, on_delete=models.SET_NULL, blank=True, null=True)
+    user = models.ForeignKey(Account, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    variation = models.ForeignKey(Variation, on_delete=models.CASCADE)
+    color = models.CharField(max_length=50)
+    size = models.CharField(max_length=50)
+    quantity = models.IntegerField()
+    price = models.FloatField()
+    ordered = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.product.product_name

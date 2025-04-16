@@ -10,6 +10,8 @@ from vendor.models import Vendor
 from  accounts.utils import send_verification_email 
 from django.utils.http import urlsafe_base64_decode
 from django.contrib.auth.tokens import default_token_generator
+from cart.models import Cart, CartItem
+from cart.views import _cart_id
 
 
 # restricting the user from accesing the unauthorize pages
@@ -157,6 +159,36 @@ def login(request):
         if user is not None:
             auth.login(request, user)
             messages.success(request, 'You have been logged in successfully!')
+
+            # Cart merging logic start
+            try:
+                cart = Cart.objects.get(cart_id=_cart_id(request))
+                cart_items = CartItem.objects.filter(cart=cart)
+
+                for item in cart_items:
+                    # Check if user has a cart item with same product and variations
+                    user_cart_items = CartItem.objects.filter(user=user, product=item.product)
+                    item_variations = list(item.variations.all())
+                    merged = False
+
+                    for user_item in user_cart_items:
+                        user_item_variations = list(user_item.variations.all())
+                        if sorted(user_item_variations, key=lambda x: x.id) == sorted(item_variations, key=lambda x: x.id):
+                            user_item.quantity += item.quantity
+                            user_item.save()
+                            item.delete()
+                            merged = True
+                            break
+
+                    if not merged:
+                        item.user = user
+                        item.cart = None
+                        item.save()
+
+                cart.delete()
+            except Cart.DoesNotExist:
+                pass
+            # Cart merging logic end
             
             if user.is_admin or user.is_superadmin:
                 return redirect('/admin/')  # Django admin panel
