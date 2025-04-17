@@ -2,155 +2,207 @@
 {% load static %}
 {% load humanize %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
 {% block content %}
-<section class="cart-section">
-    <div class="container">
-        <!-- Checkout Progress -->
-        <div class="checkout-progress">
-            <div class="progress-steps">
-                <div class="step active">
-                    <span class="step-number">1</span>
-                    <span class="step-label">Information</span>
-                </div>
-                <div class="step">
-                    <span class="step-number">2</span>
-                    <span class="step-label">Shipping</span>
-                </div>
+<div class="checkout-container">
+    <!-- Progress Steps -->
+    <div class="checkout-progress">
+        <div class="progress-steps">
+            <div class="step active">
+                <span class="step-number">1</span>
+                <span class="step-name">Information</span>
+            </div>
+            <div class="step">
+                <span class="step-number">2</span>
+                <span class="step-name">Shipping</span>
+            </div>
+            <div class="step">
+                <span class="step-number">3</span>
+                <span class="step-name">Payment</span>
             </div>
         </div>
+    </div>
 
-        <div class="cart-header">
-            <h1 class="cart-title">Secure Checkout</h1>
-            <p class="cart-subtitle">Complete your purchase in just a few steps</p>
-        </div>
-
-        <div class="cart-content">
-            <!-- Checkout Form -->
-            <div class="checkout-form-container">
-                <form id="checkoutForm" method="POST">
-                    {% csrf_token %}
-                    
-                    <!-- Customer Information -->
-                    <div class="checkout-form-section">
-                        <h3 class="checkout-section-title">Customer Information</h3>
-                        <div class="form-group">
-                            <label for="fullName">Full Name</label>
-                            <input type="text" id="fullName" name="fullName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" required>
-                        </div>
-                    </div>
-
-                    <!-- Shipping Address -->
-                    <div class="checkout-form-section">
-                        <h3 class="checkout-section-title">Shipping Address</h3>
-                        <div class="form-group">
-                            <label for="address">Street Address</label>
-                            <input type="text" id="address" name="address" required>
-                        </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="city">City</label>
-                                <input type="text" id="city" name="city" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="state">State/Province</label>
-                                <input type="text" id="state" name="state" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="zipCode">ZIP/Postal Code</label>
-                                <input type="text" id="zipCode" name="zipCode" required>
-                            </div>
-                        </div>
-                        <input type="hidden" id="country" name="country" value="NP">
-                    </div>
-
-                    <button type="submit" form="checkoutForm" class="checkout-btn">
-                        <i class="fas fa-lock"></i>
-                        Complete Secure Order
-                    </button>
-                </form>
-            </div>
-
-            <!-- Order Summary -->
-            <div class="order-summary">
-                <h4>Order Summary</h4>
-                <div class="summary-items">
-                    <table class="table table-bordered">
-                        <thead>
-                            <tr>
-                                <th>Qty</th>
-                                <th>Product</th>
-                                <th>Color</th>
-                                <th>Size</th>
-                                <th>Price</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for item in cart_items %}
-                            <tr>
-                                <td>{{ item.quantity }}</td>
-                                <td>{{ item.product.product_name }}</td>
-                                <td>
-                                    {% for variation in item.variations.all %}
-                                        {% if variation.variation_category|lower == 'color' %}
-                                            {{ variation.variation_value|capfirst }}
-                                        {% endif %}
-                                    {% empty %}
-                                        N/A
-                                    {% endfor %}
-                                </td>
-                                <td>
-                                    {% for variation in item.variations.all %}
-                                        {% if variation.variation_category|lower == 'size' %}
-                                            {{ variation.variation_value|capfirst }}
-                                        {% endif %}
-                                    {% empty %}
-                                        N/A
-                                    {% endfor %}
-                                </td>
-                                <td>{{ currency_symbol }}{{ item.item_total|floatformat:2|intcomma }}</td>
-                            </tr>
-                            {% endfor %}
-                            <tr>
-                                <td colspan="4">Subtotal ({{ quantity }} items)</td>
-                                <td>{{ currency_symbol }}{{ total|floatformat:2|intcomma }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">Shipping</td>
-                                <td>{{ currency_symbol }}{{ shipping_charge|floatformat:2|intcomma }}</td>
-                            </tr>
-                            <tr>
-                                <td colspan="4">Tax (13%)</td>
-                                <td>{{ currency_symbol }}{{ tax|floatformat:2|intcomma }}</td>
-                            </tr>
-                            <tr class="table-active">
-                                <td colspan="4"><strong>Total</strong></td>
-                                <td><strong>{{ currency_symbol }}{{ grand_total|floatformat:2|intcomma }}</strong></td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+    <div class="checkout-grid">
+        <!-- Left Column - Form -->
+        <div class="checkout-form">
+            <form method="POST" id="checkoutForm" novalidate>
+                {% csrf_token %}
                 
-                <div class="trust-badges">
-                    <div class="badge">
-                        <i class="fas fa-lock"></i>
-                        <span>Secure Checkout</span>
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Please correct the errors below.
+                </div>
+                {% endif %}
+
+                <!-- Customer Information -->
+                <section>
+                    <h2 class="section-title">
+                        <i class="fas fa-user"></i>
+                        Customer Information
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.first_name.id_for_label }}">First Name</label>
+                            {{ form.first_name }}
+                            {% if form.first_name.errors %}
+                            <span class="error-message">{{ form.first_name.errors.as_text }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
+                            {{ form.last_name }}
+                            {% if form.last_name.errors %}
+                            <span class="error-message">{{ form.last_name.errors.as_text }}</span>
+                            {% endif %}
+                        </div>
                     </div>
-                    <div class="badge">
-                        <i class="fas fa-shield-alt"></i>
-                        <span>SSL Encryption</span>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email Address</label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                        <span class="error-message">{{ form.email.errors.as_text }}</span>
+                        {% endif %}
                     </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                        <span class="error-message">{{ form.phone.errors.as_text }}</span>
+                        {% endif %}
+                    </div>
+                </section>
+
+                <!-- Shipping Address -->
+                <section>
+                    <h2 class="section-title">
+                        <i class="fas fa-truck"></i>
+                        Shipping Address
+                    </h2>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.address.id_for_label }}">Street Address</label>
+                        {{ form.address }}
+                        {% if form.address.errors %}
+                        <span class="error-message">{{ form.address.errors.as_text }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.city.id_for_label }}">City</label>
+                            {{ form.city }}
+                            {% if form.city.errors %}
+                            <span class="error-message">{{ form.city.errors.as_text }}</span>
+                            {% endif %}
+                        </div>
+                        <div class="form-group">
+                            <label for="{{ form.state.id_for_label }}">State/Province</label>
+                            {{ form.state }}
+                            {% if form.state.errors %}
+                            <span class="error-message">{{ form.state.errors.as_text }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.zip_code.id_for_label }}">ZIP/Postal Code</label>
+                        {{ form.zip_code }}
+                        {% if form.zip_code.errors %}
+                        <span class="error-message">{{ form.zip_code.errors.as_text }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <input type="hidden" name="country" value="NP">
+                    <input type="hidden" name="total" value="{{ grand_total }}">
+                    <input type="hidden" name="tax" value="{{ tax }}">
+                    <input type="hidden" name="shipping_charge" value="{{ shipping_charge }}">
+                    <input type="hidden" name="payment_method" value="Cash on Delivery">
+                </section>
+            </form>
+        </div>
+
+        <!-- Right Column - Compact Order Summary -->
+        <div class="order-summary">
+            <h3 class="summary-title">
+                <i class="fas fa-receipt"></i>
+                Your Order
+            </h3>
+            
+            <div class="product-list">
+                {% for item in cart_items %}
+                <div class="product-item">
+                    <div class="product-image">
+                        {% if item.product.images.first %}
+                        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.product_name }}">
+                        {% else %}
+                        <i class="fas fa-box-open default-product-img"></i>
+                        {% endif %}
+                    </div>
+                    <div class="product-details">
+                        <h4 class="product-name">{{ item.product.product_name }}</h4>
+                        <div class="product-variants">
+                            {% for variation in item.variations.all %}
+                            <span class="variant-tag">
+                                {% if variation.variation_category|lower == 'color' %}
+                                <i class="fas fa-palette"></i>
+                                {% else %}
+                                <i class="fas fa-ruler"></i>
+                                {% endif %}
+                                {{ variation.variation_value|capfirst }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                        <div class="product-meta">
+                            <span class="product-quantity">Qty: {{ item.quantity }}</span>
+                            <span class="product-price">{{ currency_symbol }}{{ item.item_total|floatformat:2|intcomma }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="order-totals">
+                <div class="total-row">
+                    <span>Subtotal ({{ quantity }} items)</span>
+                    <span>{{ currency_symbol }}{{ total|floatformat:2|intcomma }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Shipping</span>
+                    <span>{{ currency_symbol }}{{ shipping_charge|floatformat:2|intcomma }}</span>
+                </div>
+                <div class="total-row">
+                    <span>Tax (13%)</span>
+                    <span>{{ currency_symbol }}{{ tax|floatformat:2|intcomma }}</span>
+                </div>
+                <div class="total-row grand-total">
+                    <span>Total</span>
+                    <span>{{ currency_symbol }}{{ grand_total|floatformat:2|intcomma }}</span>
+                </div>
+            </div>
+            
+            <button type="submit" form="checkoutForm" class="place-order-btn">
+                <i class="fas fa-lock"></i> Place Secure Order
+            </button>
+            
+            <div class="security-badges">
+                <div class="security-badge">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>Secure Checkout</span>
+                </div>
+                <div class="security-badge">
+                    <i class="fas fa-lock"></i>
+                    <span>SSL Encrypted</span>
                 </div>
             </div>
         </div>
     </div>
-</section>
-
+</div>
 {% endblock %}

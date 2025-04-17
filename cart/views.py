@@ -1,10 +1,12 @@
 from django.shortcuts import render,redirect, get_object_or_404
 from store.models import Product,Variation
 from .models import Cart,CartItem
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ObjectDoesNotExist,ValidationError
 from django.contrib.auth.decorators import login_required
 from accounts.models import Account
-
+from order.forms import OrderForm
+from django.contrib import messages
+from django.db import IntegrityError
 
 # Create your views here.
 
@@ -149,43 +151,31 @@ def cart(request, total=0, quantity=0, cart_items=None):
     }
     return render(request, 'store/cart.html', context)
 
+
+
 @login_required(login_url='login')
 def checkout(request, total=0, quantity=0, cart_items=None):
-    if not request.user.role == Account.CUSTOMER:
-        return redirect('login')
-
-    shipping_charge = 0
-    grand_total = 0
-    tax = 0
-    cart_items = []
-
     try:
-        cart = Cart.objects.get(cart_id=_cart_id(request))
-        cart_items = CartItem.objects.filter(cart=cart, is_active=True)
+        tax = 0
+        grand_total = 0
+        if request.user.is_authenticated:
+            cart_items = CartItem.objects.filter(user=request.user, is_active=True)
+        else:
+            cart = Cart.objects.get(cart_id=_cart_id(request))
+            cart_items = CartItem.objects.filter(cart=cart, is_active=True)
         for cart_item in cart_items:
-            cart_item.item_total = cart_item.product.price * cart_item.quantity
-            total += cart_item.item_total
+            total += (cart_item.product.price * cart_item.quantity)
             quantity += cart_item.quantity
-
-        shipping_charge = (2 * total) / 100
-        tax = (13 * total) / 100
-        grand_total = total + shipping_charge + tax
-
+        tax = (2 * total)/100
+        grand_total = total + tax
     except ObjectDoesNotExist:
-        pass
-
-    if request.method == 'POST':
-        # For now, just redirect to cart or a placeholder page after form submission
-        return redirect('cart')
+        pass #just ignore
 
     context = {
         'total': total,
         'quantity': quantity,
         'cart_items': cart_items,
-        'shipping_charge': shipping_charge,
-        'tax': tax,
+        'tax'       : tax,
         'grand_total': grand_total,
-        'currency_symbol': '₹',  # Assuming Indian Rupee, adjust as needed
     }
     return render(request, 'store/checkout.html', context)
-
