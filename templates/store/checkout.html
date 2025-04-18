@@ -29,12 +29,12 @@
     <div class="checkout-grid">
         <!-- Left Column - Form -->
         <div class="checkout-form">
-            <form method="POST" id="checkoutForm" novalidate>
+            <form method="POST" id="checkoutForm" action="{% url 'place_order' %}" novalidate>
                 {% csrf_token %}
                 
                 {% if form.errors %}
                 <div class="alert alert-danger">
-                    <i class="fas fa-exclamation-circle"></i>
+                    <i class="fas fa-exclamation-circle icon-primary"></i>
                     Please correct the errors below.
                 </div>
                 {% endif %}
@@ -42,21 +42,21 @@
                 <!-- Customer Information -->
                 <section>
                     <h2 class="section-title">
-                        <i class="fas fa-user"></i>
+                        <i class="fas fa-user icon-primary"></i>
                         Customer Information
                     </h2>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="{{ form.first_name.id_for_label }}">First Name</label>
-                            {{ form.first_name }}
+                            <label for="{{ form.first_name.id_for_label }}">First Name<span class="required-asterisk">*</span></label>
+                            <input type="text" name="first_name" class="form-control" required>
                             {% if form.first_name.errors %}
                             <span class="error-message">{{ form.first_name.errors.as_text }}</span>
                             {% endif %}
                         </div>
                         <div class="form-group">
-                            <label for="{{ form.last_name.id_for_label }}">Last Name</label>
-                            {{ form.last_name }}
+                            <label for="{{ form.last_name.id_for_label }}">Last Name<span class="required-asterisk">*</span></label>
+                            <input type="text" name="last_name" class="form-control" required>
                             {% if form.last_name.errors %}
                             <span class="error-message">{{ form.last_name.errors.as_text }}</span>
                             {% endif %}
@@ -64,16 +64,16 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.email.id_for_label }}">Email Address</label>
-                        {{ form.email }}
+                        <label for="{{ form.email.id_for_label }}">Email Address<span class="required-asterisk">*</span></label>
+                        <input type="email" name="email" class="form-control" required>
                         {% if form.email.errors %}
                         <span class="error-message">{{ form.email.errors.as_text }}</span>
                         {% endif %}
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.phone.id_for_label }}">Phone Number</label>
-                        {{ form.phone }}
+                        <label for="{{ form.phone.id_for_label }}">Phone Number<span class="required-asterisk">*</span></label>
+                        <input type="text" name="phone" class="form-control" required>
                         {% if form.phone.errors %}
                         <span class="error-message">{{ form.phone.errors.as_text }}</span>
                         {% endif %}
@@ -83,29 +83,37 @@
                 <!-- Shipping Address -->
                 <section>
                     <h2 class="section-title">
-                        <i class="fas fa-truck"></i>
+                        <i class="fas fa-truck icon-primary"></i>
                         Shipping Address
                     </h2>
                     
                     <div class="form-group">
-                        <label for="{{ form.address.id_for_label }}">Street Address</label>
-                        {{ form.address }}
-                        {% if form.address.errors %}
-                        <span class="error-message">{{ form.address.errors.as_text }}</span>
+                        <label for="{{ form.address_line_1.id_for_label }}">Street Address<span class="required-asterisk">*</span></label>
+                        <input type="text" name="address_line_1" class="form-control" required>
+                        {% if form.address_line_1.errors %}
+                        <span class="error-message">{{ form.address_line_1.errors.as_text }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.address_line_2.id_for_label }}">Apartment, Suite, etc. (Optional)</label>
+                        <input type="text" name="address_line_2" class="form-control">
+                        {% if form.address_line_2.errors %}
+                        <span class="error-message">{{ form.address_line_2.errors.as_text }}</span>
                         {% endif %}
                     </div>
                     
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="{{ form.city.id_for_label }}">City</label>
-                            {{ form.city }}
+                            <label for="{{ form.city.id_for_label }}">City<span class="required-asterisk">*</span></label>
+                            <input type="text" name="city" class="form-control" required>
                             {% if form.city.errors %}
                             <span class="error-message">{{ form.city.errors.as_text }}</span>
                             {% endif %}
                         </div>
                         <div class="form-group">
-                            <label for="{{ form.state.id_for_label }}">State/Province</label>
-                            {{ form.state }}
+                            <label for="{{ form.state.id_for_label }}">State/Province<span class="required-asterisk">*</span></label>
+                            <input type="text" name="state" class="form-control" required>
                             {% if form.state.errors %}
                             <span class="error-message">{{ form.state.errors.as_text }}</span>
                             {% endif %}
@@ -113,93 +121,109 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="{{ form.zip_code.id_for_label }}">ZIP/Postal Code</label>
-                        {{ form.zip_code }}
-                        {% if form.zip_code.errors %}
-                        <span class="error-message">{{ form.zip_code.errors.as_text }}</span>
+                        <label for="{{ form.country.id_for_label }}">Country<span class="required-asterisk">*</span></label>
+                        <input type="text" name="country" class="form-control" required>
+                        {% if form.country.errors %}
+                        <span class="error-message">{{ form.country.errors.as_text }}</span>
                         {% endif %}
                     </div>
                     
-                    <input type="hidden" name="country" value="NP">
-                    <input type="hidden" name="total" value="{{ grand_total }}">
+                    <div class="form-group">
+                        <label for="{{ form.order_note.id_for_label }}">Order Notes (Optional)</label>
+                        <textarea name="order_note" rows="2" class="form-control"></textarea>
+                        {% if form.order_note.errors %}
+                        <span class="error-message">{{ form.order_note.errors.as_text }}</span>
+                        {% endif %}
+                    </div>
+                    
+                    <input type="hidden" name="total" value="{{ total }}">
                     <input type="hidden" name="tax" value="{{ tax }}">
                     <input type="hidden" name="shipping_charge" value="{{ shipping_charge }}">
+                    <input type="hidden" name="grand_total" value="{{ grand_total }}">
                     <input type="hidden" name="payment_method" value="Cash on Delivery">
                 </section>
             </form>
         </div>
 
-        <!-- Right Column - Compact Order Summary -->
+        <!-- Right Column - Order Summary -->
         <div class="order-summary">
-            <h3 class="summary-title">
-                <i class="fas fa-receipt"></i>
-                Your Order
-            </h3>
-            
-            <div class="product-list">
-                {% for item in cart_items %}
-                <div class="product-item">
-                    <div class="product-image">
-                        {% if item.product.images.first %}
-                        <img src="{{ item.product.images.first.image.url }}" alt="{{ item.product.product_name }}">
-                        {% else %}
-                        <i class="fas fa-box-open default-product-img"></i>
-                        {% endif %}
-                    </div>
-                    <div class="product-details">
-                        <h4 class="product-name">{{ item.product.product_name }}</h4>
-                        <div class="product-variants">
-                            {% for variation in item.variations.all %}
-                            <span class="variant-tag">
-                                {% if variation.variation_category|lower == 'color' %}
-                                <i class="fas fa-palette"></i>
-                                {% else %}
-                                <i class="fas fa-ruler"></i>
+            <div class="order-summary-inner">
+                <div class="summary-header">
+                    <h3 class="summary-title">
+                        <i class="fas fa-receipt icon-primary"></i>
+                        Order Summary
+                    </h3>
+                    <span class="items-count">{{ cart_count }} item{{ cart_count|pluralize }}</span>
+                </div>
+                
+                <div class="product-list">
+                    {% for cart_item in cart_items %}
+                    <div class="product-item">
+                        <div class="product-image">
+                            {% if cart_item.product.images %}
+                                <img src="{{ cart_item.product.images.url }}" alt="{{ cart_item.product.product_name }}">
+                            {% else %}
+                                <img src="{% static 'images/default-product.png' %}" alt="No image available">
+                            {% endif %}
+                        </div>
+                        <div class="product-details">
+                            <h4 class="product-name">{{ cart_item.product.product_name }}</h4>
+                            <div class="product-variants">
+                                {% if cart_item.variations.all %}
+                                    {% for item in cart_item.variations.all %}
+                                    <span class="variant-tag">
+                                        {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}
+                                    </span>
+                                    {% endfor %}
                                 {% endif %}
-                                {{ variation.variation_value|capfirst }}
-                            </span>
-                            {% endfor %}
-                        </div>
-                        <div class="product-meta">
-                            <span class="product-quantity">Qty: {{ item.quantity }}</span>
-                            <span class="product-price">{{ currency_symbol }}{{ item.item_total|floatformat:2|intcomma }}</span>
+                            </div>
+                            <div class="product-meta">
+                                <span class="product-quantity">Qty: {{ cart_item.quantity }}</span>
+                                <span class="product-price">$ {{ cart_item.sub_total|floatformat:2 }}</span>
+                            </div>
                         </div>
                     </div>
+                    {% endfor %}
                 </div>
-                {% endfor %}
-            </div>
-            
-            <div class="order-totals">
-                <div class="total-row">
-                    <span>Subtotal ({{ quantity }} items)</span>
-                    <span>{{ currency_symbol }}{{ total|floatformat:2|intcomma }}</span>
+                
+                <div class="order-totals">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span>$ {{ total|floatformat:2 }}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Shipping</span>
+                        <span>
+                            {% if shipping_charge > 0 %}
+                                $ {{ shipping_charge|floatformat:2 }}
+                            {% else %}
+                                FREE
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax</span>
+                        <span>$ {{ tax|floatformat:2 }}</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total Amount</span>
+                        <span>$ {{ grand_total|floatformat:2 }}</span>
+                    </div>
                 </div>
-                <div class="total-row">
-                    <span>Shipping</span>
-                    <span>{{ currency_symbol }}{{ shipping_charge|floatformat:2|intcomma }}</span>
-                </div>
-                <div class="total-row">
-                    <span>Tax (13%)</span>
-                    <span>{{ currency_symbol }}{{ tax|floatformat:2|intcomma }}</span>
-                </div>
-                <div class="total-row grand-total">
-                    <span>Total</span>
-                    <span>{{ currency_symbol }}{{ grand_total|floatformat:2|intcomma }}</span>
-                </div>
-            </div>
-            
-            <button type="submit" form="checkoutForm" class="place-order-btn">
-                <i class="fas fa-lock"></i> Place Secure Order
-            </button>
-            
-            <div class="security-badges">
-                <div class="security-badge">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>Secure Checkout</span>
-                </div>
-                <div class="security-badge">
-                    <i class="fas fa-lock"></i>
-                    <span>SSL Encrypted</span>
+                
+                <button type="submit" form="checkoutForm" class="place-order-btn">
+                    <i class="fas fa-lock"></i> Place Order Securely
+                </button>
+                
+                <div class="security-badges">
+                    <div class="security-badge">
+                        <i class="fas fa-shield-alt"></i>
+                        <span>100% Secure Payment</span>
+                    </div>
+                    <div class="security-badge">
+                        <i class="fas fa-lock"></i>
+                        <span>SSL Encrypted</span>
+                    </div>
                 </div>
             </div>
         </div>

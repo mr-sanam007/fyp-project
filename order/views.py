@@ -1,5 +1,8 @@
-
+import logging
 from django.shortcuts import render, redirect
+
+# Set up logging
+logger = logging.getLogger(__name__)
 from django.http import HttpResponse, JsonResponse
 from cart.models import CartItem
 from .forms import OrderForm

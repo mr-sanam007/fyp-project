@@ -123,7 +123,6 @@ def vendorsignup(request):
             mail_subject = "please activate your account"
             email_template = "accounts/email/account_verification_email.html"
             send_verification_email ( request, user,mail_subject,email_template)
-
             messages.success(request, 'Your account has been created successfully! Please wait for approval.')
             return redirect('vendorsignup')
         else:

@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/checkout.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="checkout-container">
+    <!-- Progress Steps -->
+    <div class="checkout-progress">
+        <div class="progress-steps">
+            <div class="step">
+                <span class="step-number">1</span>
+                <span class="step-name">Information</span>
+            </div>
+            <div class="step active">
+                <span class="step-number">2</span>
+                <span class="step-name">Payment</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="checkout-grid">
+        <!-- Left Column - Payment Form -->
+        <div class="checkout-form">
+            <form method="POST" id="paymentForm" action="{% url 'payments' %}" novalidate>
+                {% csrf_token %}
+                <h2 class="section-title">
+                    <i class="fas fa-credit-card icon-primary"></i>
+                    Payment Details
+                </h2>
+
+                <div class="form-group">
+                    <label for="payment_method">Select Payment Method<span class="required-asterisk">*</span></label>
+                    <select name="payment_method" id="payment_method" class="form-control professional-dropdown" required>
+                        <option value="Credit Card">Credit Card</option>
+                        <option value="PayPal">PayPal</option>
+                        <option value="Cash on Delivery">Cash on Delivery</option>
+                        <option value="Khalti">Khalti</option>
+                    </select>
+                </div>
+
+                <!-- Additional payment fields can be added here -->
+
+                <button type="submit" class="place-order-btn">
+                    <i class="fas fa-lock"></i> Complete Payment
+                </button>
+            </form>
+
+            <!-- Billing Address Section -->
+            <section class="billing-address" style="margin-top: 2rem; padding: 1rem; border: 1px solid #ddd; border-radius: 8px; background-color: #f9fafb;">
+                <h2 class="section-title" style="font-size: 1.25rem; margin-bottom: 1rem;">
+                    <i class="fas fa-address-card icon-primary"></i>
+                    Billing Address
+                </h2>
+                <p><strong>Order Number:</strong> {{ order.order_number }}</p>
+                <p><strong>Full Name:</strong> {{ order.first_name }} {{ order.last_name }}</p>
+                <p><strong>Address:</strong> {{ order.address_line_1 }}{% if order.address_line_2 %}, {{ order.address_line_2 }}{% endif %}, {{ order.city }}, {{ order.state }}, {{ order.country }}</p>
+                <p><strong>Phone Number:</strong> {{ order.phone }}</p>
+                <p><strong>Order Note:</strong> {{ order.order_note|default:"None" }}</p>
+            </section>
+        </div>
+
+        <!-- Right Column - Order Summary -->
+        <div class="order-summary">
+            <div class="order-summary-inner">
+                <div class="summary-header">
+                    <h3 class="summary-title">
+                        <i class="fas fa-receipt icon-primary"></i>
+                        Order Summary
+                    </h3>
+                    <span class="items-count">{{ cart_items|length }} item{{ cart_items|length|pluralize }}</span>
+                </div>
+
+                <div class="product-list">
+                    {% for cart_item in cart_items %}
+                    <div class="product-item" style="display: flex; align-items: center; margin-bottom: 1rem;">
+                        <div class="product-image" style="flex-shrink: 0; width: 100px; height: 100px; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.15); margin-right: 1rem;">
+                            {% if cart_item.product.image %}
+                                <img src="{{ cart_item.product.image.url }}" alt="{{ cart_item.product.product_name }}" style="width: 100%; height: 100%; object-fit: contain;">
+                            {% else %}
+                                <img src="{% static 'images/default-product.png' %}" alt="No image available" style="width: 100%; height: 100%; object-fit: contain;">
+                            {% endif %}
+                        </div>
+                        <div class="product-details" style="flex-grow: 1;">
+                            <h4 class="product-name" style="margin: 0 0 0.5rem 0; font-weight: 600; font-size: 1.1rem;">{{ cart_item.product.product_name }}</h4>
+                            <div class="product-variants" style="margin-bottom: 0.5rem;">
+                                {% if cart_item.variations.all %}
+                                    {% for item in cart_item.variations.all %}
+                                    <span class="variant-tag" style="display: inline-block; background-color: #f0f0f0; color: #333; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.85rem; margin-right: 0.3rem;">
+                                        {{ item.variation_category|capfirst }}: {{ item.variation_value|capfirst }}
+                                    </span>
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                            <div class="product-meta" style="font-size: 0.9rem; color: #555; display: flex; justify-content: space-between; max-width: 200px;">
+                                <span class="product-quantity">Qty: {{ cart_item.quantity }}</span>
+                                <span class="product-price">$ {{ cart_item.sub_total|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <div class="order-totals">
+                    <div class="total-row">
+                        <span>Subtotal</span>
+                        <span>$ {{ total|floatformat:2 }}</span>
+                    </div>
+                    <div class="total-row">
+                        <span>Tax</span>
+                        <span>$ {{ tax|floatformat:2 }}</span>
+                    </div>
+                    <div class="total-row grand-total">
+                        <span>Total Amount</span>
+                        <span>$ {{ grand_total|floatformat:2 }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

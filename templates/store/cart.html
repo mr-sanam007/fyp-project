@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load humanize %}  
+{% load humanize %}
 
 {% block content %}
 
@@ -44,24 +44,11 @@
                                 <a href="{{ cart_item.product.get_url }}" class="cart-product-name">{{ cart_item.product.product_name }}</a>
                                 {% if cart_item.variations.all %}
                                 <div class="cart-product-variations">
-                                    <span>Color: 
-                                        {% for variation in cart_item.variations.all %}
-                                            {% if variation.variation_category|lower == 'color' %}
-                                                {{ variation.variation_value|capfirst }}
-                                            {% endif %}
-                                        {% empty %}
-                                            N/A
-                                        {% endfor %}
-                                    </span>
-                                    <span>Size: 
-                                        {% for variation in cart_item.variations.all %}
-                                            {% if variation.variation_category|lower == 'size' %}
-                                                {{ variation.variation_value|capfirst }}
-                                            {% endif %}
-                                        {% empty %}
-                                            N/A
-                                        {% endfor %}
-                                    </span>
+                                    {% for variation in cart_item.variations.all %}
+                                        <span class="variation-item">
+                                            {{ variation.variation_category|capfirst }}: {{ variation.variation_value|capfirst }}
+                                        </span>
+                                    {% endfor %}
                                 </div>
                                 {% endif %}
                             </div>
@@ -69,13 +56,20 @@
 
                         <div class="cart-item-quantity-cell">
                             <div class="cart-quantity-control">
-                                <a href="{% url 'remove_cart' cart_item.product.id %}?variations={{ cart_item.variation_ids_str }}" class="cart-quantity-btn cart-quantity-decrease">
+                                <a href="{% url 'remove_cart' cart_item.product.id cart_item.id %}" class="cart-quantity-btn cart-quantity-decrease">
                                     <i class="fas fa-minus"></i>
                                 </a>
-                                <input type="text" class="cart-quantity-input" value="{{ cart_item.quantity }}" readonly>
-                                <a href="{% url 'add_cart' cart_item.product.id %}?variations={{ cart_item.variation_ids_str }}" class="cart-quantity-btn cart-quantity-increase">
-                                    <i class="fas fa-plus"></i>
-                                </a>
+                                <span class="cart-quantity-input">{{ cart_item.quantity }}</span>
+                                <form action="{% url 'add_cart' cart_item.product.id %}" method="POST" class="quantity-form">
+                                    {% csrf_token %}
+                                    {% for variation in cart_item.variations.all %}
+                                        <input type="hidden" name="{{ variation.variation_category }}" value="{{ variation.variation_value }}">
+                                    {% endfor %}
+                                    <input type="hidden" name="cart_item_id" value="{{ cart_item.id }}">
+                                    <button type="submit" class="cart-quantity-btn cart-quantity-increase">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </form>
                             </div>
                         </div>
 
@@ -85,7 +79,9 @@
                         </div>
 
                         <div class="cart-item-action-cell">
-                            <a href="{% url 'remove_cart_item' cart_item.product.id %}?variations={{ cart_item.variation_ids_str }}" class="cart-remove-item-btn" onclick="return confirm('Are you sure you want to remove this item?')">
+                            <a href="{% url 'remove_cart_item' cart_item.product.id cart_item.id %}" 
+                               class="cart-remove-item-btn" 
+                               onclick="return confirm('Are you sure you want to remove this item?')">
                                 <i class="fas fa-trash-alt"></i>
                                 <span>Remove</span>
                             </a>
@@ -100,12 +96,12 @@
                     </div>
                     <div class="cart-summary-content">
                         <div class="cart-summary-row">
-                            <span class="cart-summary-label">Subtotal</span>
+                            <span class="cart-summary-label">Subtotal ({{ quantity }} items)</span>
                             <span class="cart-summary-value">NPR {{ total|floatformat:2|intcomma }}</span>
                         </div>
                         <div class="cart-summary-row">
-                            <span class="cart-summary-label">Shipping</span>
-                            <span class="cart-summary-value">NPR {{ shipping_charge|floatformat:2|intcomma }}</span>
+                            <span class="cart-summary-label">Tax</span>
+                            <span class="cart-summary-value">NPR {{ tax|floatformat:2|intcomma }}</span>
                         </div>
                         <div class="cart-summary-divider"></div>
                         <div class="cart-summary-row cart-summary-total">
